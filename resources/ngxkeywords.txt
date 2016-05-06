@@ -1,0 +1,109 @@
+arg
+var.VARIABLE
+ctx
+location.capture uri, options?
+location.capture_multi { {uri, options?}, {uri, options?}, ... }
+status
+header.HEADER
+resp.get_headers max_headers?, raw?
+req.is_internal 
+req.start_time 
+req.http_version 
+req.raw_header no_request_line?
+req.get_method 
+req.set_method method_id
+req.set_uri uri, jump?
+req.set_uri_args args
+req.get_uri_args max_args?
+req.get_post_args max_args?
+req.get_headers max_headers?, raw?
+req.set_header header_name, header_value
+req.clear_header header_name
+req.read_body 
+req.discard_body 
+req.get_body_data 
+req.get_body_file 
+req.set_body_data data
+req.set_body_file file_name, auto_clean?
+req.init_body buffer_size?
+req.append_body data_chunk
+req.finish_body 
+req.socket 
+exec uri, args?
+redirect uri, status?
+send_headers 
+headers_sent
+print ...
+say ...
+log log_level, ...
+flush wait?
+exit status
+eof 
+sleep seconds
+escape_uri str
+unescape_uri str
+encode_args table
+decode_args str, max_args?
+encode_base64 str, no_padding?
+decode_base64 str
+crc32_short str
+crc32_long str
+hmac_sha1 secret_key, str
+md5 str
+md5_bin str
+sha1_bin str
+quote_sql_str raw_value
+today 
+time 
+now 
+update_time 
+localtime 
+utctime 
+cookie_time sec
+http_time sec
+parse_http_time str
+is_subrequest
+re.match subject, regex, options?, ctx?, res_table?
+re.find subject, regex, options?, ctx?, nth?
+re.gmatch subject, regex, options?
+re.sub subject, regex, replace, options?
+re.gsub subject, regex, replace, options?
+shared.DICT
+shared.DICT.get key
+shared.DICT.get_stale key
+shared.DICT.set key, value, exptime?, flags?
+shared.DICT.safe_set key, value, exptime?, flags?
+shared.DICT.add key, value, exptime?, flags?
+shared.DICT.safe_add key, value, exptime?, flags?
+shared.DICT.replace key, value, exptime?, flags?
+shared.DICT.delete key
+shared.DICT.incr key, value
+shared.DICT.flush_all 
+shared.DICT.flush_expired max_count?
+shared.DICT.get_keys max_count?
+socket.udp 
+socket.stream
+socket.tcp 
+socket.connect host, port
+get_phase 
+thread.spawn func, arg1, arg2, ...
+thread.wait thread1, thread2, ...
+thread.kill thread
+on_abort callback
+timer.at delay, callback, user_arg1, user_arg2, ...
+timer.running_count 
+timer.pending_count 
+config.subsystem
+config.debug
+config.prefix
+config.nginx_version
+config.nginx_configure
+config.ngx_lua_version
+worker.exiting
+worker.pid
+worker.count
+worker.id
+semaphore
+balancer
+ssl
+ocsp

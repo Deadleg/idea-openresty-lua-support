@@ -1,0 +1,75 @@
+import org.ajoberstar.grgit.Grgit
+
+buildscript {
+    repositories {
+        // jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:1.4.2'
+    }
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.0.43"
+//    id 'org.ajoberstar.grgit' version "1.4.2"
+}
+
+apply plugin: 'idea'
+apply plugin: 'java'
+
+group 'com.github.deadleg'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+sourceSets {
+    main {
+        java.srcDirs 'src', 'gen'
+        resources.srcDir 'resources'
+    }
+    test {
+        java.srcDir 'tests'
+    }
+}
+
+intellij {
+    version 'IC-2016.1' //IntelliJ IDEA dependency
+    //plugins 'coverage' //Bundled plugin dependencies
+    pluginName 'idea-openresty-lua-support'
+}
+
+task('getLuaRepo') << {
+    Grgit.clone(dir: file('vendor/lua-nginx-module'), uri: 'https://github.com/openresty/lua-nginx-module.git')
+}
+
+task('generateKeywords') << {
+    File f = file('vendor/lua-nginx-module/doc/HttpLuaModule.wiki')
+    def lines = f.readLines()
+    def keywords = [];
+    def start = lines.lastIndexOf('= Nginx API for Lua =')
+    for (int i = start; i < lines.size(); i++) {
+        def maybeHeading = lines.get(i);
+        if (maybeHeading.startsWith("== ngx.")) {
+            def field = maybeHeading.substring(3, maybeHeading.length() - 3)
+            def shortField = maybeHeading.substring(7, maybeHeading.length() - 3)
+            def syntax = lines.get(i + 1)
+            def split = syntax.split(field)
+            def args = ""
+            if (split.length > 1 && split[1].startsWith("(")) {
+                args = " " + split[1].substring(1, split[1].indexOf(')'))
+            }
+            keywords.add(shortField + args)
+        }
+    }
+    File outFile = file('resources/ngxkeywords.txt')
+    outFile.write(keywords.join('\n'))
+}

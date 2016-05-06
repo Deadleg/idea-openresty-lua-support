@@ -1,0 +1,22 @@
+<idea-plugin version="2">
+  <id>com.github.Deadleg.idea-openresty-lua-support</id>
+  <name>Plugin display name here</name>
+  <version>1.0</version>
+  <vendor email="Deadleg@gmail.com" url="http://Deadleg.github.io">Deadleg</vendor>
+
+  <description><![CDATA[
+    ]]></description>
+
+  <change-notes><![CDATA[
+    ]]>
+  </change-notes>
+
+  <idea-version since-build="141.0"/>
+
+  <depends>com.intellij.modules.lang</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <completion.contributor language="any" implementationClass="com.github.deadleg.idea.openresty.lua.NgxLuaCompletionContributor"/>
+  </extensions>
+
+</idea-plugin>
