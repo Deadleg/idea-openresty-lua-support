@@ -1,0 +1,3 @@
+syntax: ngx.req.append_body(data_chunk)
+
+context: set_by_lua*, rewrite_by_lua*, access_by_lua*, content_by_lua*

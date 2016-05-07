@@ -1,0 +1,3 @@
+syntax: ok, err = ngx.thread.kill(thread)
+
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*, ngx.timer.*

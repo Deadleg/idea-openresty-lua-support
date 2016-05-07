@@ -1,0 +1,3 @@
+syntax: ngx.redirect(uri, status?)
+
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*

@@ -1,0 +1,3 @@
+syntax: val = ngx.arg\[index\]
+
+context: set_by_lua*, body_filter_by_lua*

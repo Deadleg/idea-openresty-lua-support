@@ -1,0 +1,1 @@
+syntax: local balancer = require "ngx.balancer"

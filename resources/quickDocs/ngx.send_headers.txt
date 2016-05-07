@@ -1,0 +1,3 @@
+syntax: ok, err = ngx.send_headers()
+
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*

@@ -1,0 +1,3 @@
+syntax: value = ngx.headers_sent
+
+context: set_by_lua*, rewrite_by_lua*, access_by_lua*, content_by_lua*

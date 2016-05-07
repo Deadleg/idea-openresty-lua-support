@@ -1,0 +1,1 @@
+syntax: tcpsock, err = ngx.socket.connect(host, port)

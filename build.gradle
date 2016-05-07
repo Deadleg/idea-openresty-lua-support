@@ -51,7 +51,12 @@ intellij {
 }
 
 task('getLuaRepo') << {
-    Grgit.clone(dir: file('vendor/lua-nginx-module'), uri: 'https://github.com/openresty/lua-nginx-module.git')
+    def path = 'vendor/lua-nginx-module'
+    if (!file(apisPath).exists()) {
+        Grgit.clone(dir: file(path), uri: 'https://github.com/openresty/lua-nginx-module.git')
+    } else {
+        Grgit.open(dir: apisPath).pull()
+    }
 }
 
 task('generateKeywords') {
@@ -107,14 +112,14 @@ generateDocs << {
 
         // Get full docs
         def fullDoc = [];
-        def line = ''
         def i = start + 2;
         while (!lines.get(i).startsWith('[Back to TOC]')) {
             fullDoc.add(lines.get(i))
             i++;
         }
 
-        file("markdown/quickDocs/ngx.${keyword}.md").write(quickDoc.join('\n'))
+        file("resources/quickDocs/ngx.${keyword}.txt").write(
+                quickDoc.join('\n').replace('*', '').replace("&#42;", "*"))
         file("markdown/docs/ngx.${keyword}.md").write(fullDoc.join('\n'))
     }
 }
@@ -125,18 +130,11 @@ task('convertDocs', type: MarkdownToHtmlTask) {
     outputDir = file('resources/docs')
 }
 
-task('convertQuickDocs', type: MarkdownToHtmlTask) {
-    group 'documentation'
-    sourceDir = file('markdown/quickDocs')
-    outputDir = file('resources/quickDocs')
-}
-
 task('generateDocumentation') {
     group 'documentation'
 }
 
 generateDocs.dependsOn(generateKeywords)
 convertDocs.dependsOn(generateDocs)
-convertQuickDocs.dependsOn(generateDocs)
-generateDocumentation.dependsOn(convertDocs, convertQuickDocs)
+generateDocumentation.dependsOn(convertDocs)
 

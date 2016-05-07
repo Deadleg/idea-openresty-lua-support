@@ -1,0 +1,3 @@
+syntax: res = ngx.location.capture(uri, options?)
+
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*

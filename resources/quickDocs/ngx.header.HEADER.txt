@@ -1,0 +1,1 @@
+syntax: ngx.header.HEADER = VALUE

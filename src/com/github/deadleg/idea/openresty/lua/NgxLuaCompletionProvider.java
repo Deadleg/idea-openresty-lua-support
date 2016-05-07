@@ -8,6 +8,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class NgxLuaCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
@@ -31,8 +33,12 @@ public class NgxLuaCompletionProvider extends CompletionProvider<CompletionParam
             // prev sibling is '.', and the prev sibling of that is 'ngx'.
             String key = constructNgxCall(element);
 
-            NgxLuaKeywords.getKeywords(key)
-                    .forEach(keyword -> result.addElement(LookupElementBuilder.create(keyword)));
+            List<String> keywords = NgxLuaKeywords.getKeywords(key);
+            if (keywords == null) {
+                return;
+            }
+            keywords.forEach(
+                    keyword -> result.addElement(LookupElementBuilder.create(keyword)));
         }
     }
 

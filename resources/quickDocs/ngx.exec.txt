@@ -1,0 +1,3 @@
+syntax: ngx.exec(uri, args?)
+
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*

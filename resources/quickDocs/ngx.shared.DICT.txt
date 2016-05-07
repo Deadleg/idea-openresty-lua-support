@@ -1,0 +1,1 @@
+syntax: dict = ngx.shared.DICT

@@ -1,0 +1,3 @@
+syntax: num = ngx.req.http_version()
+
+context: set_by_lua*, rewrite_by_lua*, access_by_lua*, content_by_lua*, header_filter_by_lua*

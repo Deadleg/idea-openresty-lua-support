@@ -6,26 +6,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 public class NgxLuaDocumentationProvider extends AbstractDocumentationProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(NgxLuaDocumentationProvider.class);
+
     @Override
     public List<String> getUrlFor(PsiElement element, PsiElement originalElement) {
-        return Arrays.asList(element.getText());
+        return null;
     }
 
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
         try {
-            if (!element.getText().startsWith("ngx")) {
+            if (element == null || !element.getText().startsWith("ngx")) {
                 return null;
             }
             URI path = getClass().getResource("/docs/" + element.getText() + ".html").toURI();
@@ -44,10 +46,17 @@ public class NgxLuaDocumentationProvider extends AbstractDocumentationProvider {
     @Override
     public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
         try {
-            if (!element.getText().startsWith("ngx")) {
+            if (originalElement == null || !originalElement.getText().startsWith("ngx")) {
                 return null;
             }
-            URI path = getClass().getResource("/quickDocs/" + element.getText() + ".html").toURI();
+
+            String text = originalElement.getText();
+            int openBrace = text.indexOf('(');
+            if (openBrace > -1) {
+                text = text.substring(0, openBrace);
+            }
+
+            URI path = getClass().getResource("/quickDocs/" + text + ".txt").toURI();
             if (!Files.exists(Paths.get(path))) {
                 return null;
             }

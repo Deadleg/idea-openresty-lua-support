@@ -37,8 +37,7 @@ public class NgxLuaParameterInfoHandler implements ParameterInfoHandler<PsiEleme
     public PsiElement findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
         int offset = context.getOffset();
         // LuaFunctionCallExpression
-        PsiElement other = context.getFile().findElementAt(offset).getParent().getParent(); // TODO check type is parameter list
-        return other;
+        return context.getFile().findElementAt(offset).getParent().getParent();
     }
 
     @Override
@@ -54,16 +53,14 @@ public class NgxLuaParameterInfoHandler implements ParameterInfoHandler<PsiEleme
             return;
         }
 
-        Object[] o = parameters;
-        context.setItemsToShow(o);
-        context.showHint(element, element.getTextRange().getStartOffset(), this); // TODO null pointer on functions
+        context.setItemsToShow(parameters);
+        context.showHint(element, element.getTextRange().getStartOffset(), this);
     }
 
     @Nullable
     @Override
     public PsiElement findElementForUpdatingParameterInfo(@NotNull UpdateParameterInfoContext context) {
-        PsiElement other = context.getFile().findElementAt(context.getOffset()).getParent().getParent();
-        return other;
+        return context.getFile().findElementAt(context.getOffset()).getParent().getParent();
     }
 
     @Override
@@ -79,7 +76,7 @@ public class NgxLuaParameterInfoHandler implements ParameterInfoHandler<PsiEleme
             return;
         }
 
-        // Traverse up the tree until we hit the parent that holds the parent
+        // Traverse up the tree until we hit the parent that holds the children
         PsiElement root = context.getFile().findElementAt(context.getOffset() - 1); // Get element at start of cursor
         for (int i = 0; i < 3; i++) {
             root = root.getParent();
@@ -115,11 +112,13 @@ public class NgxLuaParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
         StringBuilder buffer = new StringBuilder();
 
-        if (p instanceof PsiElement)
+        if (p instanceof PsiElement) {
             buffer.append(((PsiElement)p).getText());
+        }
 
-        if (p instanceof String)
+        if (p instanceof String) {
             buffer.append(p);
+        }
 
         context.setupUIComponentPresentation(
                 buffer.toString(),

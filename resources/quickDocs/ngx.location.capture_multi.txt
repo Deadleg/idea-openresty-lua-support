@@ -1,0 +1,3 @@
+syntax: res1, res2, ... = ngx.location.capture_multi({ {uri, options?}, {uri, options?}, ... })
+
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*
