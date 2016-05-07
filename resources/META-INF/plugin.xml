@@ -17,6 +17,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <completion.contributor language="any" implementationClass="com.github.deadleg.idea.openresty.lua.NgxLuaCompletionContributor"/>
+    <codeInsight.parameterInfo language="Lua" implementationClass="com.github.deadleg.idea.openresty.lua.NgxLuaParameterInfoHandler"/>
+    <lang.documentationProvider order="FIRST" language="Lua" implementationClass="com.github.deadleg.idea.openresty.lua.NgxLuaDocumentationProvider"/>
   </extensions>
 
 </idea-plugin>

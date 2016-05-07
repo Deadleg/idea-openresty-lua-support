@@ -5,3 +5,4 @@ vendor/
 *.ipr
 *.iws
 build/
+markdown/

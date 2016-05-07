@@ -1,0 +1,8 @@
+<p><strong>syntax:</strong> <em>udpsock = ngx.socket.udp()</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;</em></p><p>Creates and returns a UDP or datagram-oriented unix domain socket object (also known as one type of the "cosocket" objects). The following methods are supported on this object:</p>
+<ul>
+  <li><a href="#udpsocksetpeername">setpeername</a></li>
+  <li><a href="#udpsocksend">send</a></li>
+  <li><a href="#udpsockreceive">receive</a></li>
+  <li><a href="#udpsockclose">close</a></li>
+  <li><a href="#udpsocksettimeout">settimeout</a></li>
+</ul><p>It is intended to be compatible with the UDP API of the <a href="http://w3.impa.br/~diego/software/luasocket/udp.html">LuaSocket</a> library but is 100% nonblocking out of the box.</p><p>This feature was first introduced in the <code>v0.5.7</code> release.</p><p>See also <a href="#ngxsockettcp">ngx.socket.tcp</a>.</p>

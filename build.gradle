@@ -1,22 +1,25 @@
 import org.ajoberstar.grgit.Grgit
+import org.kordamp.gradle.markdown.MarkdownToHtmlTask
 
 buildscript {
     repositories {
-        // jcenter()
+        jcenter()
         mavenCentral()
+        maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
         classpath 'org.ajoberstar:gradle-git:1.4.2'
+        classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
     }
 }
 
 plugins {
     id "org.jetbrains.intellij" version "0.0.43"
-//    id 'org.ajoberstar.grgit' version "1.4.2"
 }
 
 apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: 'org.kordamp.markdown.convert'
 
 group 'com.github.deadleg'
 version '0.0.1-SNAPSHOT'
@@ -51,7 +54,11 @@ task('getLuaRepo') << {
     Grgit.clone(dir: file('vendor/lua-nginx-module'), uri: 'https://github.com/openresty/lua-nginx-module.git')
 }
 
-task('generateKeywords') << {
+task('generateKeywords') {
+    group 'documentation'
+}
+
+generateKeywords << {
     File f = file('vendor/lua-nginx-module/doc/HttpLuaModule.wiki')
     def lines = f.readLines()
     def keywords = [];
@@ -73,3 +80,63 @@ task('generateKeywords') << {
     File outFile = file('resources/ngxkeywords.txt')
     outFile.write(keywords.join('\n'))
 }
+
+task('generateDocs', dependsOn: 'generateKeywords') {
+    group 'documentation'
+}
+generateDocs << {
+    File f = file('vendor/lua-nginx-module/README.markdown')
+    List<String> keywords = file('resources/ngxkeywords.txt').readLines()
+    def lines = f.readLines()
+    keywords.each { key ->
+        def keyword = key.split(' ')[0] // if there are args then we need to remove them
+        def start = lines.findIndexOf({ it.startsWith "ngx.${keyword}" })
+
+        // Generate quick docs
+        // Just grabs the syntax/context lines
+        def maybeSyntax = lines.get(start + 2)
+        def maybeContext = lines.get(start + 4)
+        def quickDoc = [];
+        if (maybeSyntax.startsWith('**syntax') || maybeSyntax.startsWith('**context')) {
+            quickDoc.add(maybeSyntax)
+        }
+        if (maybeSyntax.startsWith('**syntax') && maybeContext.startsWith('**context')) {
+            quickDoc.add('')
+            quickDoc.add(maybeContext)
+        }
+
+        // Get full docs
+        def fullDoc = [];
+        def line = ''
+        def i = start + 2;
+        while (!lines.get(i).startsWith('[Back to TOC]')) {
+            fullDoc.add(lines.get(i))
+            i++;
+        }
+
+        file("markdown/quickDocs/ngx.${keyword}.md").write(quickDoc.join('\n'))
+        file("markdown/docs/ngx.${keyword}.md").write(fullDoc.join('\n'))
+    }
+}
+
+task('convertDocs', type: MarkdownToHtmlTask) {
+    group 'documentation'
+    sourceDir = file('markdown/docs')
+    outputDir = file('resources/docs')
+}
+
+task('convertQuickDocs', type: MarkdownToHtmlTask) {
+    group 'documentation'
+    sourceDir = file('markdown/quickDocs')
+    outputDir = file('resources/quickDocs')
+}
+
+task('generateDocumentation') {
+    group 'documentation'
+}
+
+generateDocs.dependsOn(generateKeywords)
+convertDocs.dependsOn(generateDocs)
+convertQuickDocs.dependsOn(generateDocs)
+generateDocumentation.dependsOn(convertDocs, convertQuickDocs)
+

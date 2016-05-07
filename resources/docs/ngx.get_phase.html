@@ -1,0 +1,15 @@
+<p><strong>syntax:</strong> <em>str = ngx.get_phase()</em></p><p><strong>context:</strong> <em>init_by_lua&#42;, init_worker_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;</em></p><p>Retrieves the current running phase name. Possible return values are</p>
+<ul>
+  <li><code>init</code> for the context of <a href="#init_by_lua">init_by_lua</a> or <a href="#init_by_lua_file">init_by_lua_file</a>.</li>
+  <li><code>init_worker</code> for the context of <a href="#init_worker_by_lua">init_worker_by_lua</a> or <a href="#init_worker_by_lua_file">init_worker_by_lua_file</a>.</li>
+  <li><code>ssl_cert</code> for the context of <a href="#ssl_certificate_by_lua_block">ssl_certificate_by_lua_block</a> or <a href="#ssl_certificate_by_lua_file">ssl_certificate_by_lua_file</a>.</li>
+  <li><code>set</code> for the context of <a href="#set_by_lua">set_by_lua</a> or <a href="#set_by_lua_file">set_by_lua_file</a>.</li>
+  <li><code>rewrite</code> for the context of <a href="#rewrite_by_lua">rewrite_by_lua</a> or <a href="#rewrite_by_lua_file">rewrite_by_lua_file</a>.</li>
+  <li><code>balancer</code> for the context of <a href="#balancer_by_lua_block">balancer_by_lua_block</a> or <a href="#balancer_by_lua_file">balancer_by_lua_file</a>.</li>
+  <li><code>access</code> for the context of <a href="#access_by_lua">access_by_lua</a> or <a href="#access_by_lua_file">access_by_lua_file</a>.</li>
+  <li><code>content</code> for the context of <a href="#content_by_lua">content_by_lua</a> or <a href="#content_by_lua_file">content_by_lua_file</a>.</li>
+  <li><code>header_filter</code> for the context of <a href="#header_filter_by_lua">header_filter_by_lua</a> or <a href="#header_filter_by_lua_file">header_filter_by_lua_file</a>.</li>
+  <li><code>body_filter</code> for the context of <a href="#body_filter_by_lua">body_filter_by_lua</a> or <a href="#body_filter_by_lua_file">body_filter_by_lua_file</a>.</li>
+  <li><code>log</code> for the context of <a href="#log_by_lua">log_by_lua</a> or <a href="#log_by_lua_file">log_by_lua_file</a>.</li>
+  <li><code>timer</code> for the context of user callback functions for <a href="#ngxtimerat">ngx.timer.*</a>.</li>
+</ul><p>This API was first introduced in the <code>v0.5.10</code> release.</p>

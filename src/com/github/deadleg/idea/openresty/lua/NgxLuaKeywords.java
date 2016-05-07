@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +23,7 @@ final class NgxLuaKeywords {
         try {
             Files.lines(Paths.get(NgxLuaKeywords.class.getClassLoader().getResource("/ngxkeywords.txt").toURI()))
                     .forEach(line -> {
-                        String[] content = line.split(" ");
+                        String[] content = line.split("\\{?,?\\s\\}?");
                         String[] fields = content[0].split("\\.");
                         for (int i = 0; i < fields.length; i++) {
                             if (i == 0) {
@@ -44,7 +45,7 @@ final class NgxLuaKeywords {
                         }
 
                         if (content.length > 1) {
-                            argsTemp.put(content[0], content[1].split(", "));
+                            argsTemp.put("ngx." + content[0], Arrays.copyOfRange(content, 1, content.length));
                         }
                     });
         } catch (IOException | URISyntaxException e) {

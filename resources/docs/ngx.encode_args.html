@@ -1,0 +1,7 @@
+<p><strong>syntax:</strong> <em>str = ngx.encode_args(table)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;</em></p><p>Encode the Lua table to a query args string according to the URI encoded rules.</p><p>For example,</p><p>```lua</p><p>ngx.encode_args({foo = 3, ["b r"] = "hello world"}) ```</p><p>yields</p>
+<pre><code>foo=3&amp;b%20r=hello%20world
+</code></pre><p>The table keys must be Lua strings.</p><p>Multi-value query args are also supported. Just use a Lua table for the argument's value, for example:</p><p>```lua</p><p>ngx.encode_args({baz = {32, "hello"}}) ```</p><p>gives</p>
+<pre><code>baz=32&amp;baz=hello
+</code></pre><p>If the value table is empty and the effect is equivalent to the <code>nil</code> value.</p><p>Boolean argument values are also supported, for instance,</p><p>```lua</p><p>ngx.encode_args({a = true, b = 1}) ```</p><p>yields</p>
+<pre><code>a&amp;b=1
+</code></pre><p>If the argument value is <code>false</code>, then the effect is equivalent to the <code>nil</code> value.</p><p>This method was first introduced in the <code>v0.3.1rc27</code> release.</p>

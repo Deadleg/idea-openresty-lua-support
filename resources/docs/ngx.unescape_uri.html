@@ -1,0 +1,3 @@
+<p><strong>syntax:</strong> <em>newstr = ngx.unescape_uri(str)</em></p><p><strong>context:</strong> <em>init_by_lua&#42;, init_worker_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;</em></p><p>Unescape <code>str</code> as an escaped URI component.</p><p>For example,</p><p>```lua</p><p>ngx.say(ngx.unescape_uri("b%20r56+7")) ```</p><p>gives the output</p>
+<pre><code>b r56 7
+</code></pre>

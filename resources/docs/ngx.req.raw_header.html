@@ -1,0 +1,10 @@
+<p><strong>syntax:</strong> <em>str = ngx.req.raw_header(no_request_line?)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;</em></p><p>Returns the original raw HTTP protocol header received by the Nginx server.</p><p>By default, the request line and trailing <code>CR LF</code> terminator will also be included. For example,</p><p>```lua</p><p>ngx.print(ngx.req.raw_header()) ```</p><p>gives something like this:</p>
+<pre><code>GET /t HTTP/1.1
+Host: localhost
+Connection: close
+Foo: bar
+</code></pre><p>You can specify the optional <code>no_request_line</code> argument as a <code>true</code> value to exclude the request line from the result. For example,</p><p>```lua</p><p>ngx.print(ngx.req.raw_header(true)) ```</p><p>outputs something like this:</p>
+<pre><code>Host: localhost
+Connection: close
+Foo: bar
+</code></pre><p>This method was first introduced in the <code>v0.7.17</code> release.</p>

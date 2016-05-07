@@ -8,8 +8,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
-import javax.print.DocFlavor;
-
 public class NgxLuaCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
@@ -21,6 +19,7 @@ public class NgxLuaCompletionProvider extends CompletionProvider<CompletionParam
         PsiElement maybeExpressionList = getParentOfType("LuaExpressionList", element);
         if (maybeExpressionList != null) {
             // We are in a function list
+            String function = getFunction(maybeExpressionList);
         }
 
         if (element.getClass().getName().contains("LuaGlobalUsage")) {
@@ -37,7 +36,13 @@ public class NgxLuaCompletionProvider extends CompletionProvider<CompletionParam
         }
     }
 
+    private String getFunction(PsiElement expressionList) {
+        return "";
+    }
+
     private String constructNgxCall(PsiElement element) {
+        // if '.' LuaCompoundReference -> LuaCompoundIdentifier
+        // else LuaCompoundIdentifier -> LuaCompoundReference
         PsiElement[] siblings = element.getParent().getParent().getChildren();
         String text = siblings[0].getText();
         return text.substring(0, text.lastIndexOf('.')) ;
