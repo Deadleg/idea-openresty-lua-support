@@ -5,6 +5,9 @@
   <vendor email="Deadleg@gmail.com" url="http://Deadleg.github.io">Deadleg</vendor>
 
   <description><![CDATA[
+Add lua-nginx-module auto-completion and documentation to Lua code.
+
+You must have the Lua plugin installed to use this, otherwise and exception will be thrown.
     ]]></description>
 
   <change-notes><![CDATA[
