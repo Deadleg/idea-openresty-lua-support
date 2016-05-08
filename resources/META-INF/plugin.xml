@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.github.Deadleg.idea-openresty-lua-support</id>
-  <name>Plugin display name here</name>
-  <version>1.0</version>
+  <name>OpenResty Lua Support</name>
+  <version>0.0.2</version>
   <vendor email="Deadleg@gmail.com" url="http://Deadleg.github.io">Deadleg</vendor>
 
   <description><![CDATA[

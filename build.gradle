@@ -23,7 +23,7 @@ apply plugin: 'kotlin'
 apply plugin: 'org.kordamp.markdown.convert'
 
 group 'com.github.deadleg'
-version '0.0.1'
+version '0.0.2'
 
 sourceCompatibility = 1.8
 
@@ -51,7 +51,7 @@ sourceSets {
 intellij {
     version 'IC-2016.1' //IntelliJ IDEA dependency
     //plugins 'coverage' //Bundled plugin dependencies
-    pluginName 'idea-openresty-lua-support'
+    pluginName 'openrestyLuaSupport'
 }
 
 task('getLuaRepo') << {
