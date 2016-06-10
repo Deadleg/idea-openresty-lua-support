@@ -23,7 +23,7 @@ apply plugin: 'kotlin'
 apply plugin: 'org.kordamp.markdown.convert'
 
 group 'com.github.deadleg'
-version '0.0.2'
+version '0.0.3'
 
 sourceCompatibility = 1.8
 

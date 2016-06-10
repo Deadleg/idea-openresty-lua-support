@@ -6,6 +6,8 @@ Once you have the Lua plugin and this plugin installed, you should start seeing 
 
 Currently everything is pulled from the [lua-nginx-module documentation](https://github.com/openresty/lua-nginx-module), so there may some things missing especially all of the `resty` plugins.
 
+This plugin should work on all JetBrains products with builds >= 141.
+
 ## Development
 
 To regenerate all of the keywords and documentation, run `./gradlew generateDocumentation`. This will pull the lua-nginx-module into the `vendor` directory then run some gradle tasks to extract the information.
