@@ -49,7 +49,8 @@ sourceSets {
 }
 
 intellij {
-    version 'IC-2016.1' //IntelliJ IDEA dependency
+    version '2016.1' //IntelliJ IDEA dependency
+    updateSinceUntilBuild false
     //plugins 'coverage' //Bundled plugin dependencies
     pluginName 'openrestyLuaSupport'
 }
