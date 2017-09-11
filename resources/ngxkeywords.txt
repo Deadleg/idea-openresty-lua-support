@@ -77,7 +77,12 @@ shared.DICT.add key, value, exptime?, flags?
 shared.DICT.safe_add key, value, exptime?, flags?
 shared.DICT.replace key, value, exptime?, flags?
 shared.DICT.delete key
-shared.DICT.incr key, value
+shared.DICT.incr key, value, init?
+shared.DICT.lpush key, value
+shared.DICT.rpush key, value
+shared.DICT.lpop key
+shared.DICT.rpop key
+shared.DICT.llen key
 shared.DICT.flush_all 
 shared.DICT.flush_expired max_count?
 shared.DICT.get_keys max_count?
@@ -91,6 +96,7 @@ thread.wait thread1, thread2, ...
 thread.kill thread
 on_abort callback
 timer.at delay, callback, user_arg1, user_arg2, ...
+timer.every delay, callback, user_arg1, user_arg2, ...
 timer.running_count 
 timer.pending_count 
 config.subsystem

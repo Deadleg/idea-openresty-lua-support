@@ -1,4 +1,4 @@
-<p><strong>syntax:</strong> <em>tcpsock = ngx.socket.tcp()</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;</em></p><p>Creates and returns a TCP or stream-oriented unix domain socket object (also known as one type of the "cosocket" objects). The following methods are supported on this object:</p>
+<p><strong>syntax:</strong> <em>tcpsock = ngx.socket.tcp()</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;</em></p><p>Creates and returns a TCP or stream-oriented unix domain socket object (also known as one type of the "cosocket" objects). The following methods are supported on this object:</p>
 <ul>
   <li><a href="#tcpsockconnect">connect</a></li>
   <li><a href="#tcpsocksslhandshake">sslhandshake</a></li>
@@ -6,6 +6,7 @@
   <li><a href="#tcpsockreceive">receive</a></li>
   <li><a href="#tcpsockclose">close</a></li>
   <li><a href="#tcpsocksettimeout">settimeout</a></li>
+  <li><a href="#tcpsocksettimeouts">settimeouts</a></li>
   <li><a href="#tcpsocksetoption">setoption</a></li>
   <li><a href="#tcpsockreceiveuntil">receiveuntil</a></li>
   <li><a href="#tcpsocksetkeepalive">setkeepalive</a></li>

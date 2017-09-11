@@ -1,3 +1,3 @@
 syntax: args, err = ngx.req.get_post_args(max_args?)
 
-context: rewrite_by_lua*, access_by_lua*, content_by_lua*, header_filter_by_lua*, body_filter_by_lua, log_by_lua*
+context: rewrite_by_lua*, access_by_lua*, content_by_lua*, header_filter_by_lua*, body_filter_by_lua*, log_by_lua*
