@@ -15,7 +15,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.0.43"
+    id "org.jetbrains.intellij" version "0.2.17"
 }
 
 apply plugin: 'idea'
@@ -23,7 +23,7 @@ apply plugin: 'kotlin'
 apply plugin: 'org.kordamp.markdown.convert'
 
 group 'com.github.deadleg'
-version '0.0.3'
+version '0.0.3-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -51,16 +51,17 @@ sourceSets {
 intellij {
     version '2016.1' //IntelliJ IDEA dependency
     updateSinceUntilBuild false
-    //plugins 'coverage' //Bundled plugin dependencies
     pluginName 'openrestyLuaSupport'
 }
 
-task('getLuaRepo') << {
-    def path = 'vendor/lua-nginx-module'
-    if (!file(apisPath).exists()) {
-        Grgit.clone(dir: file(path), uri: 'https://github.com/openresty/lua-nginx-module.git')
-    } else {
-        Grgit.open(dir: apisPath).pull()
+task('getLuaRepo') {
+    doLast {
+        def path = 'vendor/lua-nginx-module'
+        if (!file(path).exists()) {
+            Grgit.clone(dir: file(path), uri: 'https://github.com/openresty/lua-nginx-module.git')
+        } else {
+            Grgit.open(dir: file(path)).pull()
+        }
     }
 }
 
@@ -68,64 +69,69 @@ task('generateKeywords') {
     group 'documentation'
 }
 
-generateKeywords << {
-    File f = file('vendor/lua-nginx-module/doc/HttpLuaModule.wiki')
-    def lines = f.readLines()
-    def keywords = [];
-    def start = lines.lastIndexOf('= Nginx API for Lua =')
-    for (int i = start; i < lines.size(); i++) {
-        def maybeHeading = lines.get(i);
-        if (maybeHeading.startsWith("== ngx.")) {
-            def field = maybeHeading.substring(3, maybeHeading.length() - 3)
-            def shortField = maybeHeading.substring(7, maybeHeading.length() - 3)
-            def syntax = lines.get(i + 1)
-            def split = syntax.split(field)
-            def args = ""
-            if (split.length > 1 && split[1].startsWith("(")) {
-                args = " " + split[1].substring(1, split[1].indexOf(')'))
+generateKeywords {
+    doLast {
+        File f = file('vendor/lua-nginx-module/doc/HttpLuaModule.wiki')
+        def lines = f.readLines()
+        def keywords = [];
+        def start = lines.lastIndexOf('= Nginx API for Lua =')
+        for (int i = start; i < lines.size(); i++) {
+            def maybeHeading = lines.get(i);
+            if (maybeHeading.startsWith("== ngx.")) {
+                def field = maybeHeading.substring(3, maybeHeading.length() - 3)
+                def shortField = maybeHeading.substring(7, maybeHeading.length() - 3)
+                def syntax = lines.get(i + 1)
+                def split = syntax.split(field)
+                def args = ""
+                if (split.length > 1 && split[1].startsWith("(")) {
+                    args = " " + split[1].substring(1, split[1].indexOf(')'))
+                }
+                keywords.add(shortField + args)
             }
-            keywords.add(shortField + args)
         }
+        File outFile = file('resources/ngxkeywords.txt')
+        outFile.write(keywords.join('\n'))
     }
-    File outFile = file('resources/ngxkeywords.txt')
-    outFile.write(keywords.join('\n'))
 }
 
 task('generateDocs', dependsOn: 'generateKeywords') {
     group 'documentation'
 }
-generateDocs << {
-    File f = file('vendor/lua-nginx-module/README.markdown')
-    List<String> keywords = file('resources/ngxkeywords.txt').readLines()
-    def lines = f.readLines()
-    keywords.each { key ->
-        def keyword = key.split(' ')[0] // if there are args then we need to remove them
-        def start = lines.findIndexOf({ it.startsWith "ngx.${keyword}" })
 
-        // Generate quick docs
-        // Just grabs the syntax/context lines
-        def maybeSyntax = lines.get(start + 2)
-        def maybeContext = lines.get(start + 4)
-        def quickDoc = [];
-        if (maybeSyntax.startsWith('**syntax') || maybeSyntax.startsWith('**context')) {
-            quickDoc.add(maybeSyntax)
-        }
-        if (maybeSyntax.startsWith('**syntax') && maybeContext.startsWith('**context')) {
-            quickDoc.add('')
-            quickDoc.add(maybeContext)
-        }
+generateDocs {
+    doLast {
+        File f = file('vendor/lua-nginx-module/README.markdown')
+        List<String> keywords = file('resources/ngxkeywords.txt').readLines()
+        def lines = f.readLines()
+        keywords.each { key ->
+            def keyword = key.split(' ')[0] // if there are args then we need to remove them
+            def start = lines.findIndexOf({ it.startsWith "ngx.${keyword}" })
 
-        // Get full docs
-        def fullDoc = [];
-        def i = start + 2;
-        while (!lines.get(i).startsWith('[Back to TOC]')) {
-            fullDoc.add(lines.get(i))
-            i++;
-        }
+            // Generate quick docs
+            // Just grabs the syntax/context lines
+            def maybeSyntax = lines.get(start + 2)
+            def maybeContext = lines.get(start + 4)
+            def quickDoc = []
+            if (maybeSyntax.startsWith('**syntax') || maybeSyntax.startsWith('**context')) {
+                quickDoc.add(maybeSyntax)
+            }
+            if (maybeSyntax.startsWith('**syntax') && maybeContext.startsWith('**context')) {
+                quickDoc.add('')
+                quickDoc.add(maybeContext)
+            }
 
-        file("resources/quickDocs/ngx.${keyword}.txt").write(
-                quickDoc.join('\n').replace('*', '').replace("&#42;", "*"))
-        file("markdown/docs/ngx.${keyword}.md").write(fullDoc.join('\n'))
+            // Get full docs
+            def fullDoc = []
+            def i = start + 2
+            while (!lines.get(i).startsWith('[Back to TOC]')) {
+                fullDoc.add(lines.get(i))
+                i++
+            }
+
+            file("resources/quickDocs/ngx.${keyword}.txt").write(
+                    quickDoc.join('\n').replace('*', '').replace("&#42;", "*"))
+            file("markdown/docs/ngx.${keyword}.md").write(fullDoc.join('\n'))
+        }
     }
 }
 
