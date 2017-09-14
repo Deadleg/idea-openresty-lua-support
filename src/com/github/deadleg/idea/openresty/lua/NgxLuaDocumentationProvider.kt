@@ -21,9 +21,14 @@ class NgxLuaDocumentationProvider : AbstractDocumentationProvider() {
 
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
         try {
-            if (element == null || !element.text.startsWith("ngx")) {
+            if (element == null || element.text == null) {
                 return null
             }
+
+            if (!element.text.startsWith("ngx")) {
+                return null
+            }
+
             val path = javaClass.getResource("/docs/" + element.text + ".html").toURI()
             if (!Files.exists(Paths.get(path))) {
                 return null
@@ -31,9 +36,9 @@ class NgxLuaDocumentationProvider : AbstractDocumentationProvider() {
             val lines = Files.readAllLines(Paths.get(path))
             return lines.joinToString("\n")
         } catch (e: IOException) {
-            e.printStackTrace()
+            LOG.error("IOException getting log information for element {} and originalElement {}", e, element, originalElement)
         } catch (e: URISyntaxException) {
-            e.printStackTrace()
+            LOG.error("URISyntaxException getting log information for element {} and originalElement {}", e, element, originalElement)
         }
 
         return null
