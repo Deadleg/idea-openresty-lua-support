@@ -10,9 +10,10 @@ You must have the Lua plugin installed, otherwise this will throw an ungraceful 
     ]]></description>
 
   <change-notes><![CDATA[
-      <b>0.0.3</b>
+      <b>0.0.4</b>
       <ul>
-        <li>Fix compatibility with idea &gt;= 141</li>
+        <li>Update OpenResty keywords.</li>
+        <li>Improve error handling (issues <a href="https://github.com/Deadleg/idea-openresty-lua-support/issues/3">3</a> and <a href="https://github.com/Deadleg/idea-openresty-lua-support/issues/4">4</a>).</li>
       </ul>
     ]]>
   </change-notes>
