@@ -26,7 +26,7 @@ class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val offset = context.offset
         // LuaFunctionCallExpression
-        return context.file.findElementAt(offset)!!.parent.parent
+        return context.file.findElementAt(offset)?.parent?.parent
     }
 
     override fun showParameterInfo(element: PsiElement, context: CreateParameterInfoContext) {
@@ -35,7 +35,16 @@ class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
             return
         }
         // Remove braces
-        val function = element.text.substring(0, element.textLength - 2)
+        val functionElement = if ("com.sylvanaar.idea.Lua.lang.psi.impl.lists.LuaExpressionListImpl".equals(element.javaClass.name)) {
+            element.parent.parent
+        } else {
+            element
+        }
+        val function = if (functionElement.textContains('(')) {
+            functionElement.text.substring(0, functionElement.text.indexOf('('))
+        } else {
+            functionElement.text
+        }
         val parameters = NgxLuaKeywords.getArgs(function) ?: return
 
         context.itemsToShow = parameters.toTypedArray()
@@ -43,7 +52,7 @@ class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
     }
 
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
-        return context.file.findElementAt(context.offset)!!.parent.parent
+        return context.file.findElementAt(context.offset)?.parent?.parent
     }
 
     override fun updateParameterInfo(psiElement: PsiElement, context: UpdateParameterInfoContext) {
@@ -52,13 +61,18 @@ class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
             return
         }
         // Remove braces
-        val function = psiElement.text.substring(0, psiElement.text.indexOf('('))
+        val function = if (psiElement.textContains('(')) {
+            psiElement.text.substring(0, psiElement.text.indexOf('('))
+        } else {
+            // Case when getting info from just ngx.location.capture, not ngx.location.capture()
+            psiElement.text
+        }
         val parameters = NgxLuaKeywords.getArgs(function) ?: return
 
         // Traverse up the tree until we hit the parent that holds the children
         var root = context.file.findElementAt(context.offset - 1) // Get element at start of cursor
         for (i in 0..2) {
-            root = root!!.parent
+            root = root?.parent
             if (root == null) {
                 return
             }

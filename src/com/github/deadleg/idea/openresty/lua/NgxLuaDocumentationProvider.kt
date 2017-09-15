@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -25,11 +26,11 @@ class NgxLuaDocumentationProvider : AbstractDocumentationProvider() {
                 return null
             }
 
-            if (!element.text.startsWith("ngx")) {
+            if (!element.text.startsWith("ngx") || !NgxLuaKeywords.isAKeyword(element.text)) {
                 return null
             }
 
-            val path = javaClass.getResource("/docs/" + element.text + ".html").toURI()
+            val path = javaClass.classLoader.getResource("/docs/" + element.text + ".html").toURI()
             if (!Files.exists(Paths.get(path))) {
                 return null
             }
@@ -56,23 +57,30 @@ class NgxLuaDocumentationProvider : AbstractDocumentationProvider() {
                 text = text.substring(0, openBrace)
             }
 
-            val path = javaClass.getResource("/quickDocs/$text.txt").toURI()
+            if (!NgxLuaKeywords.isAKeyword(text)) {
+                return null
+            }
+            val path = javaClass.classLoader.getResource("/quickDocs/$text.txt").toURI()
             if (!Files.exists(Paths.get(path))) {
                 return null
             }
             val lines = Files.readAllLines(Paths.get(path))
             return lines.joinToString("\n")
         } catch (e: IOException) {
-            e.printStackTrace()
+            LOG.error("IOException getting log information for element {} and originalElement {}", e, element, originalElement)
         } catch (e: URISyntaxException) {
-            e.printStackTrace()
+            LOG.error("URISyntaxException getting log information for element {} and originalElement {}", e, element, originalElement)
         }
 
         return null
     }
 
     override fun getCustomDocumentationElement(editor: Editor, file: PsiFile, contextElement: PsiElement?): PsiElement? {
-        return contextElement!!.parent.parent
+        return if (NgxLuaKeywords.isAKeyword(contextElement?.parent?.parent?.text ?: "")) {
+            contextElement?.parent?.parent
+        } else {
+            null
+        }
     }
 
     companion object {
