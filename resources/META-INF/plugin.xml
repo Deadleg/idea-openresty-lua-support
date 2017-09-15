@@ -1,7 +1,6 @@
-<idea-plugin version="2">
+<idea-plugin>
   <id>com.github.Deadleg.idea-openresty-lua-support</id>
   <name>OpenResty Lua Support</name>
-  <version>0.0.3</version>
   <vendor url="http://Deadleg.github.io">Deadleg</vendor>
 
   <description><![CDATA[
@@ -21,6 +20,7 @@ You must have the Lua plugin installed, otherwise this will throw an ungraceful 
   <idea-version since-build="141.0"/>
 
   <depends>com.intellij.modules.lang</depends>
+  <depends>Lua</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <completion.contributor language="any" implementationClass="com.github.deadleg.idea.openresty.lua.NgxLuaCompletionContributor"/>

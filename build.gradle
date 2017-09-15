@@ -31,10 +31,6 @@ repositories {
     mavenCentral()
 }
 
-intellij {
-    plugins = ['Lua:1.0.109']
-}
-
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
@@ -56,6 +52,12 @@ intellij {
     version '2016.1' //IntelliJ IDEA dependency
     updateSinceUntilBuild false
     pluginName 'openrestyLuaSupport'
+    plugins = ['Lua:1.0.109']
+
+    publishPlugin {
+        username  user
+        password  pass
+    }
 }
 
 task('getLuaRepo') {
