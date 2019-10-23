@@ -1,1 +1,6 @@
-<p><strong>syntax:</strong> <em>ngx.req.set_method(method_id)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;</em></p><p>Overrides the current request's request method with the <code>method_id</code> argument. Currently only numerical <a href="#http-method-constants">method constants</a> are supported, like <code>ngx.HTTP_POST</code> and <code>ngx.HTTP_GET</code>.</p><p>If the current request is an Nginx subrequest, then the subrequest's method will be overridden.</p><p>This method was first introduced in the <code>v0.5.6</code> release.</p><p>See also <a href="#ngxreqget_method">ngx.req.get_method</a>.</p>
+<p><strong>syntax:</strong> <em>ngx.req.set_method(method_id)</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;</em></p>
+<p>Overrides the current request's request method with the <code>method_id</code> argument. Currently only numerical <a href="#http-method-constants">method constants</a> are supported, like <code>ngx.HTTP_POST</code> and <code>ngx.HTTP_GET</code>.</p>
+<p>If the current request is an Nginx subrequest, then the subrequest's method will be overridden.</p>
+<p>This method was first introduced in the <code>v0.5.6</code> release.</p>
+<p>See also <a href="#ngxreqget_method">ngx.req.get_method</a>.</p>

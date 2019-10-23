@@ -1,1 +1,7 @@
-<p><strong>syntax:</strong> <em>ngx.req.set_body_data(data)</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;</em></p><p>Set the current request's request body using the in-memory data specified by the <code>data</code> argument.</p><p>If the current request's request body has not been read, then it will be properly discarded. When the current request's request body has been read into memory or buffered into a disk file, then the old request body's memory will be freed or the disk file will be cleaned up immediately, respectively.</p><p>This function was first introduced in the <code>v0.3.1rc18</code> release.</p><p>See also <a href="#ngxreqset_body_file">ngx.req.set_body_file</a>.</p>
+<p><strong>syntax:</strong> <em>ngx.req.set_body_data(data)</em></p>
+<p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;</em></p>
+<p>Set the current request's request body using the in-memory data specified by the <code>data</code> argument.</p>
+<p>If the request body has not been read yet, call <a href="#ngxreqread_body">ngx.req.read_body</a> first (or turn on <a href="#lua_need_request_body">lua_need_request_body</a> to force this module to read the request body. This is not recommended however). Additionally, the request body must not have been previously discarded by <a href="#ngxreqdiscard_body">ngx.req.discard_body</a>.</p>
+<p>Whether the previous request body has been read into memory or buffered into a disk file, it will be freed or the disk file will be cleaned up immediately, respectively.</p>
+<p>This function was first introduced in the <code>v0.3.1rc18</code> release.</p>
+<p>See also <a href="#ngxreqset_body_file">ngx.req.set_body_file</a>.</p>

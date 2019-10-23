@@ -1,0 +1,15 @@
+<p><strong>syntax:</strong> <em>free_page_bytes = ngx.shared.DICT:free_space()</em></p>
+<p><strong>context:</strong> <em>init_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p><strong>requires:</strong> <code>resty.core.shdict</code> or <code>resty.core</code></p>
+<p>Retrieves the free page size in bytes for the shm-based dictionary <a href="#ngxshareddict">ngx.shared.DICT</a>.</p>
+<p><strong>Note:</strong> The memory for ngx.shared.DICT is allocated via the Nginx slab allocator which has each slot for data size ranges like \~8, 9\~16, 17\~32, ..., 1025\~2048, 2048\~ bytes. And pages are assigned to a slot if there is no room in already assigned pages for the slot.</p>
+<p>So even if the return value of the <code>free_space</code> method is zero, there may be room in already assigned pages, so you may successfully set a new key value pair to the shared dict without getting <code>true</code> for <code>forcible</code> or non nil <code>err</code> from the <code>ngx.shared.DICT.set</code>.</p>
+<p>On the other hand, if already assigned pages for a slot are full and a new key value pair is added to the slot and there is no free page, you may get <code>true</code> for <code>forcible</code> or non nil <code>err</code> from the <code>ngx.shared.DICT.set</code> method.</p>
+<p>Example:</p>
+<p>```lua</p>
+<p>require "resty.core.shdict"</p>
+<p>local cats = ngx.shared.cats  local free_page_bytes = cats:free_space() ```</p>
+<p>This feature was first introduced in the <code>v0.10.11</code> release.</p>
+<p><strong>Note:</strong> This method requires the <code>resty.core.shdict</code> or <code>resty.core</code> modules from the <a href="https://github.com/openresty/lua-resty-core">lua-resty-core</a> library.</p>
+<p>This feature requires at least Nginx core version <code>1.11.7</code>.</p>
+<p>See also <a href="#ngxshareddict">ngx.shared.DICT</a>.</p>

@@ -1,1 +1,10 @@
-<p><strong>syntax:</strong> <em>headers = ngx.resp.get_headers(max_headers?, raw?)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, balancer_by_lua&#42;</em></p><p>Returns a Lua table holding all the current response headers for the current request.</p><p>```lua</p><p>local h = ngx.resp.get_headers()  for k, v in pairs(h) do  ...  end ```</p><p>This function has the same signature as <a href="#ngxreqget_headers">ngx.req.get_headers</a> except getting response headers instead of request headers.</p><p>This API was first introduced in the <code>v0.9.5</code> release.</p>
+<p><strong>syntax:</strong> <em>headers, err = ngx.resp.get_headers(max_headers?, raw?)</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, balancer_by_lua&#42;</em></p>
+<p>Returns a Lua table holding all the current response headers for the current request.</p>
+<p>```lua</p>
+<p>local h, err = ngx.resp.get_headers()</p>
+<p>if err == "truncated" then  -- one can choose to ignore or reject the current response here  end</p>
+<p>for k, v in pairs(h) do  ...  end ```</p>
+<p>This function has the same signature as <a href="#ngxreqget_headers">ngx.req.get_headers</a> except getting response headers instead of request headers.</p>
+<p>Note that a maximum of 100 response headers are parsed by default (including those with the same name) and that additional response headers are silently discarded to guard against potential denial of service attacks. Since <code>v0.10.13</code>, when the limit is exceeded, it will return a second value which is the string <code>&quot;truncated&quot;</code>.</p>
+<p>This API was first introduced in the <code>v0.9.5</code> release.</p>

@@ -1,1 +1,56 @@
-<p><strong>syntax:</strong> <em>args = ngx.req.get_uri_args(max_args?)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, balancer_by_lua&#42;</em></p><p>Returns a Lua table holding all the current request URL query arguments.</p><p>```nginx</p><p>location = /test {  content_by_lua_block {  local args = ngx.req.get_uri_args()  for key, val in pairs(args) do  if type(val) == "table" then  ngx.say(key, ": ", table.concat(val, ", "))  else  ngx.say(key, ": ", val)  end  end  }  } ```</p><p>Then <code>GET /test?foo=bar&amp;bar=baz&amp;bar=blah</code> will yield the response body</p><p>```bash</p><p>foo: bar  bar: baz, blah ```</p><p>Multiple occurrences of an argument key will result in a table value holding all the values for that key in order.</p><p>Keys and values are unescaped according to URI escaping rules. In the settings above, <code>GET /test?a%20b=1%61+2</code> will yield:</p><p>```bash</p><p>a b: 1a 2 ```</p><p>Arguments without the <code>=&lt;value&gt;</code> parts are treated as boolean arguments. <code>GET /test?foo&amp;bar</code> will yield:</p><p>```bash</p><p>foo: true  bar: true ```</p><p>That is, they will take Lua boolean values <code>true</code>. However, they are different from arguments taking empty string values. <code>GET /test?foo=&amp;bar=</code> will give something like</p><p>```bash</p><p>foo:  bar: ```</p><p>Empty key arguments are discarded. <code>GET /test?=hello&amp;=world</code> will yield an empty output for instance.</p><p>Updating query arguments via the nginx variable <code>$args</code> (or <code>ngx.var.args</code> in Lua) at runtime is also supported:</p><p>```lua</p><p>ngx.var.args = "a=3&amp;b=42"  local args = ngx.req.get_uri_args() ```</p><p>Here the <code>args</code> table will always look like</p><p>```lua</p><p>{a = 3, b = 42} ```</p><p>regardless of the actual request query string.</p><p>Note that a maximum of 100 request arguments are parsed by default (including those with the same name) and that additional request arguments are silently discarded to guard against potential denial of service attacks.</p><p>However, the optional <code>max_args</code> function argument can be used to override this limit:</p><p>```lua</p><p>local args = ngx.req.get_uri_args(10) ```</p><p>This argument can be set to zero to remove the limit and to process all request arguments received:</p><p>```lua</p><p>local args = ngx.req.get_uri_args(0) ```</p><p>Removing the <code>max_args</code> cap is strongly discouraged.</p>
+<p><strong>syntax:</strong> <em>args, err = ngx.req.get_uri_args(max_args?)</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, balancer_by_lua&#42;</em></p>
+<p>Returns a Lua table holding all the current request URL query arguments.</p>
+<p>```nginx</p>
+<p>location = /test {  content_by_lua_block {  local args, err = ngx.req.get_uri_args()</p>
+<pre><code>     if err == &quot;truncated&quot; then
+         -- one can choose to ignore or reject the current request here
+     end
+
+     for key, val in pairs(args) do
+         if type(val) == &quot;table&quot; then
+             ngx.say(key, &quot;: &quot;, table.concat(val, &quot;, &quot;))
+         else
+             ngx.say(key, &quot;: &quot;, val)
+         end
+     end
+ }
+</code></pre>
+<p>}</p>
+<p>```</p>
+<p>Then <code>GET /test?foo=bar&amp;bar=baz&amp;bar=blah</code> will yield the response body</p>
+<p>```bash</p>
+<p>foo: bar  bar: baz, blah</p>
+<p>```</p>
+<p>Multiple occurrences of an argument key will result in a table value holding all the values for that key in order.</p>
+<p>Keys and values are unescaped according to URI escaping rules. In the settings above, <code>GET /test?a%20b=1%61+2</code> will yield:</p>
+<p>```bash</p>
+<p>a b: 1a 2</p>
+<p>```</p>
+<p>Arguments without the <code>=&lt;value&gt;</code> parts are treated as boolean arguments. <code>GET /test?foo&amp;bar</code> will yield:</p>
+<p>```bash</p>
+<p>foo: true  bar: true</p>
+<p>```</p>
+<p>That is, they will take Lua boolean values <code>true</code>. However, they are different from arguments taking empty string values. <code>GET /test?foo=&amp;bar=</code> will give something like</p>
+<p>```bash</p>
+<p>foo:  bar:</p>
+<p>```</p>
+<p>Empty key arguments are discarded. <code>GET /test?=hello&amp;=world</code> will yield an empty output for instance.</p>
+<p>Updating query arguments via the Nginx variable <code>$args</code> (or <code>ngx.var.args</code> in Lua) at runtime is also supported:</p>
+<p>```lua</p>
+<p>ngx.var.args = "a=3&amp;b=42"  local args, err = ngx.req.get_uri_args()</p>
+<p>```</p>
+<p>Here the <code>args</code> table will always look like</p>
+<p>```lua</p>
+<p>{a = 3, b = 42}</p>
+<p>```</p>
+<p>regardless of the actual request query string.</p>
+<p>Note that a maximum of 100 request arguments are parsed by default (including those with the same name) and that additional request arguments are silently discarded to guard against potential denial of service attacks. Since <code>v0.10.13</code>, when the limit is exceeded, it will return a second value which is the string <code>&quot;truncated&quot;</code>.</p>
+<p>However, the optional <code>max_args</code> function argument can be used to override this limit:</p>
+<p>```lua</p>
+<p>local args, err = ngx.req.get_uri_args(10)  if err == "truncated" then  -- one can choose to ignore or reject the current request here  end</p>
+<p>```</p>
+<p>This argument can be set to zero to remove the limit and to process all request arguments received:</p>
+<p>```lua</p>
+<p>local args, err = ngx.req.get_uri_args(0) ```</p>
+<p>Removing the <code>max_args</code> cap is strongly discouraged.</p>

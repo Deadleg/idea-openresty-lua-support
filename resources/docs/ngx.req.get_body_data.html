@@ -1,6 +1,15 @@
-<p><strong>syntax:</strong> <em>data = ngx.req.get_body_data()</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, log_by_lua&#42;</em></p><p>Retrieves in-memory request body data. It returns a Lua string rather than a Lua table holding all the parsed query arguments. Use the <a href="#ngxreqget_post_args">ngx.req.get_post_args</a> function instead if a Lua table is required.</p><p>This function returns <code>nil</code> if</p>
+<p><strong>syntax:</strong> <em>data = ngx.req.get_body_data()</em></p>
+<p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, log_by_lua&#42;</em></p>
+<p>Retrieves in-memory request body data. It returns a Lua string rather than a Lua table holding all the parsed query arguments. Use the <a href="#ngxreqget_post_args">ngx.req.get_post_args</a> function instead if a Lua table is required.</p>
+<p>This function returns <code>nil</code> if</p>
 <ol>
   <li>the request body has not been read,</li>
   <li>the request body has been read into disk temporary files,</li>
   <li>or the request body has zero size.</li>
-</ol><p>If the request body has not been read yet, call <a href="#ngxreqread_body">ngx.req.read_body</a> first (or turned on <a href="#lua_need_request_body">lua_need_request_body</a> to force this module to read the request body. This is not recommended however).</p><p>If the request body has been read into disk files, try calling the <a href="#ngxreqget_body_file">ngx.req.get_body_file</a> function instead.</p><p>To force in-memory request bodies, try setting <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#client_body_buffer_size">client_body_buffer_size</a> to the same size value in <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>.</p><p>Note that calling this function instead of using <code>ngx.var.request_body</code> or <code>ngx.var.echo_request_body</code> is more efficient because it can save one dynamic memory allocation and one data copy.</p><p>This function was first introduced in the <code>v0.3.1rc17</code> release.</p><p>See also <a href="#ngxreqget_body_file">ngx.req.get_body_file</a>.</p>
+</ol>
+<p>If the request body has not been read yet, call <a href="#ngxreqread_body">ngx.req.read_body</a> first (or turn on <a href="#lua_need_request_body">lua_need_request_body</a> to force this module to read the request body. This is not recommended however).</p>
+<p>If the request body has been read into disk files, try calling the <a href="#ngxreqget_body_file">ngx.req.get_body_file</a> function instead.</p>
+<p>To force in-memory request bodies, try setting <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#client_body_buffer_size">client_body_buffer_size</a> to the same size value in <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>.</p>
+<p>Note that calling this function instead of using <code>ngx.var.request_body</code> or <code>ngx.var.echo_request_body</code> is more efficient because it can save one dynamic memory allocation and one data copy.</p>
+<p>This function was first introduced in the <code>v0.3.1rc17</code> release.</p>
+<p>See also <a href="#ngxreqget_body_file">ngx.req.get_body_file</a>.</p>

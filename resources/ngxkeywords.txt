@@ -77,15 +77,19 @@ shared.DICT.add key, value, exptime?, flags?
 shared.DICT.safe_add key, value, exptime?, flags?
 shared.DICT.replace key, value, exptime?, flags?
 shared.DICT.delete key
-shared.DICT.incr key, value, init?
+shared.DICT.incr key, value, init?, init_ttl?
 shared.DICT.lpush key, value
 shared.DICT.rpush key, value
 shared.DICT.lpop key
 shared.DICT.rpop key
 shared.DICT.llen key
+shared.DICT.ttl key
+shared.DICT.expire key, exptime
 shared.DICT.flush_all 
 shared.DICT.flush_expired max_count?
 shared.DICT.get_keys max_count?
+shared.DICT.capacity 
+shared.DICT.free_space 
 socket.udp 
 socket.stream
 socket.tcp 
@@ -101,14 +105,14 @@ timer.running_count
 timer.pending_count 
 config.subsystem
 config.debug
-config.prefix
+config.prefix 
 config.nginx_version
-config.nginx_configure
+config.nginx_configure 
 config.ngx_lua_version
-worker.exiting
-worker.pid
-worker.count
-worker.id
+worker.exiting 
+worker.pid 
+worker.count 
+worker.id 
 semaphore
 balancer
 ssl

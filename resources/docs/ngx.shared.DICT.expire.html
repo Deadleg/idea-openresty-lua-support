@@ -1,0 +1,16 @@
+<p><strong>syntax:</strong> <em>success, err = ngx.shared.DICT:expire(key, exptime)</em></p>
+<p><strong>context:</strong> <em>init_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p><strong>requires:</strong> <code>resty.core.shdict</code> or <code>resty.core</code></p>
+<p>Updates the <code>exptime</code> (in second) of a key-value pair in the shm-based dictionary <a href="#ngxshareddict">ngx.shared.DICT</a>. Returns a boolean indicating success if the operation completes or <code>nil</code> and an error message otherwise.</p>
+<p>If the key does not exist, this method will return <code>nil</code> and the error string <code>&quot;not found&quot;</code>.</p>
+<p>The <code>exptime</code> argument has a resolution of <code>0.001</code> seconds. If <code>exptime</code> is <code>0</code>, then the item will never expire.</p>
+<p>Example:</p>
+<p>```lua</p>
+<p>require "resty.core"</p>
+<p>local cats = ngx.shared.cats  local succ, err = cats:set("Marry", "a nice cat", 0.1)</p>
+<p>succ, err = cats:expire("Marry", 0.5)</p>
+<p>ngx.sleep(0.2)</p>
+<p>local val, err = cats:get("Marry")  ngx.say(val) -- "a nice cat" ```</p>
+<p>This feature was first introduced in the <code>v0.10.11</code> release.</p>
+<p><strong>Note:</strong> This method requires the <code>resty.core.shdict</code> or <code>resty.core</code> modules from the <a href="https://github.com/openresty/lua-resty-core">lua-resty-core</a> library.</p>
+<p>See also <a href="#ngxshareddict">ngx.shared.DICT</a>.</p>

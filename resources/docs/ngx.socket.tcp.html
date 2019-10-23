@@ -1,4 +1,6 @@
-<p><strong>syntax:</strong> <em>tcpsock = ngx.socket.tcp()</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;</em></p><p>Creates and returns a TCP or stream-oriented unix domain socket object (also known as one type of the "cosocket" objects). The following methods are supported on this object:</p>
+<p><strong>syntax:</strong> <em>tcpsock = ngx.socket.tcp()</em></p>
+<p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;</em></p>
+<p>Creates and returns a TCP or stream-oriented unix domain socket object (also known as one type of the "cosocket" objects). The following methods are supported on this object:</p>
 <ul>
   <li><a href="#tcpsockconnect">connect</a></li>
   <li><a href="#tcpsocksslhandshake">sslhandshake</a></li>
@@ -8,11 +10,19 @@
   <li><a href="#tcpsocksettimeout">settimeout</a></li>
   <li><a href="#tcpsocksettimeouts">settimeouts</a></li>
   <li><a href="#tcpsocksetoption">setoption</a></li>
+  <li><a href="#tcpsockreceiveany">receiveany</a></li>
   <li><a href="#tcpsockreceiveuntil">receiveuntil</a></li>
   <li><a href="#tcpsocksetkeepalive">setkeepalive</a></li>
   <li><a href="#tcpsockgetreusedtimes">getreusedtimes</a></li>
-</ul><p>It is intended to be compatible with the TCP API of the <a href="http://w3.impa.br/~diego/software/luasocket/tcp.html">LuaSocket</a> library but is 100% nonblocking out of the box. Also, we introduce some new APIs to provide more functionalities.</p><p>The cosocket object created by this API function has exactly the same lifetime as the Lua handler creating it. So never pass the cosocket object to any other Lua handler (including ngx.timer callback functions) and never share the cosocket object between different NGINX requests.</p><p>For every cosocket object's underlying connection, if you do not explicitly close it (via <a href="#tcpsockclose">close</a>) or put it back to the connection pool (via <a href="#tcpsocksetkeepalive">setkeepalive</a>), then it is automatically closed when one of the following two events happens:</p>
+</ul>
+<p>It is intended to be compatible with the TCP API of the <a href="http://w3.impa.br/~diego/software/luasocket/tcp.html">LuaSocket</a> library but is 100% nonblocking out of the box. Also, we introduce some new APIs to provide more functionalities.</p>
+<p>The cosocket object created by this API function has exactly the same lifetime as the Lua handler creating it. So never pass the cosocket object to any other Lua handler (including ngx.timer callback functions) and never share the cosocket object between different Nginx requests.</p>
+<p>For every cosocket object's underlying connection, if you do not explicitly close it (via <a href="#tcpsockclose">close</a>) or put it back to the connection pool (via <a href="#tcpsocksetkeepalive">setkeepalive</a>), then it is automatically closed when one of the following two events happens:</p>
 <ul>
   <li>the current request handler completes, or</li>
   <li>the Lua cosocket object value gets collected by the Lua GC.</li>
-</ul><p>Fatal errors in cosocket operations always automatically close the current connection (note that, read timeout error is the only error that is not fatal), and if you call <a href="#tcpsockclose">close</a> on a closed connection, you will get the "closed" error.</p><p>Starting from the <code>0.9.9</code> release, the cosocket object here is full-duplex, that is, a reader "light thread" and a writer "light thread" can operate on a single cosocket object simultaneously (both "light threads" must belong to the same Lua handler though, see reasons above). But you cannot have two "light threads" both reading (or writing or connecting) the same cosocket, otherwise you might get an error like "socket busy reading" when calling the methods of the cosocket object.</p><p>This feature was first introduced in the <code>v0.5.0rc1</code> release.</p><p>See also <a href="#ngxsocketudp">ngx.socket.udp</a>.</p>
+</ul>
+<p>Fatal errors in cosocket operations always automatically close the current connection (note that, read timeout error is the only error that is not fatal), and if you call <a href="#tcpsockclose">close</a> on a closed connection, you will get the "closed" error.</p>
+<p>Starting from the <code>0.9.9</code> release, the cosocket object here is full-duplex, that is, a reader "light thread" and a writer "light thread" can operate on a single cosocket object simultaneously (both "light threads" must belong to the same Lua handler though, see reasons above). But you cannot have two "light threads" both reading (or writing or connecting) the same cosocket, otherwise you might get an error like "socket busy reading" when calling the methods of the cosocket object.</p>
+<p>This feature was first introduced in the <code>v0.5.0rc1</code> release.</p>
+<p>See also <a href="#ngxsocketudp">ngx.socket.udp</a>.</p>

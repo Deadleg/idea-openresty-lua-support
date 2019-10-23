@@ -1,1 +1,23 @@
-<p><strong>syntax:</strong> <em>ngx.var.VAR_NAME</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;</em></p><p>Read and write Nginx variable values.</p><p>```nginx</p><p>value = ngx.var.some_nginx_variable_name  ngx.var.some_nginx_variable_name = value ```</p><p>Note that only already defined nginx variables can be written to. For example:</p><p>```nginx</p><p>location /foo {  set $my_var ''; # this line is required to create $my_var at config time  content_by_lua_block {  ngx.var.my_var = 123;  ...  }  } ```</p><p>That is, nginx variables cannot be created on-the-fly.</p><p>Some special nginx variables like <code>$args</code> and <code>$limit_rate</code> can be assigned a value, many others are not, like <code>$query_string</code>, <code>$arg_PARAMETER</code>, and <code>$http_NAME</code>.</p><p>Nginx regex group capturing variables <code>$1</code>, <code>$2</code>, <code>$3</code>, and etc, can be read by this interface as well, by writing <code>ngx.var[1]</code>, <code>ngx.var[2]</code>, <code>ngx.var[3]</code>, and etc.</p><p>Setting <code>ngx.var.Foo</code> to a <code>nil</code> value will unset the <code>$Foo</code> Nginx variable.</p><p>```lua</p><p>ngx.var.args = nil ```</p><p><strong>CAUTION</strong> When reading from an Nginx variable, Nginx will allocate memory in the per-request memory pool which is freed only at request termination. So when you need to read from an Nginx variable repeatedly in your Lua code, cache the Nginx variable value to your own Lua variable, for example,</p><p>```lua</p><p>local val = ngx.var.some_var  --- use the val repeatedly later ```</p><p>to prevent (temporary) memory leaking within the current request's lifetime. Another way of caching the result is to use the <a href="#ngxctx">ngx.ctx</a> table.</p><p>Undefined NGINX variables are evaluated to <code>nil</code> while uninitialized (but defined) NGINX variables are evaluated to an empty Lua string.</p><p>This API requires a relatively expensive metamethod call and it is recommended to avoid using it on hot code paths.</p>
+<p><strong>syntax:</strong> <em>ngx.var.VAR_NAME</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;</em></p>
+<p>Read and write Nginx variable values.</p>
+<p>```nginx</p>
+<p>value = ngx.var.some_nginx_variable_name  ngx.var.some_nginx_variable_name = value</p>
+<p>```</p>
+<p>Note that only already defined Nginx variables can be written to. For example:</p>
+<p>```nginx</p>
+<p>location /foo {  set $my_var ''; # this line is required to create $my_var at config time  content_by_lua_block {  ngx.var.my_var = 123;  ...  }  }</p>
+<p>```</p>
+<p>That is, Nginx variables cannot be created on-the-fly.</p>
+<p>Some special Nginx variables like <code>$args</code> and <code>$limit_rate</code> can be assigned a value, many others are not, like <code>$query_string</code>, <code>$arg_PARAMETER</code>, and <code>$http_NAME</code>.</p>
+<p>Nginx regex group capturing variables <code>$1</code>, <code>$2</code>, <code>$3</code>, and etc, can be read by this interface as well, by writing <code>ngx.var[1]</code>, <code>ngx.var[2]</code>, <code>ngx.var[3]</code>, and etc.</p>
+<p>Setting <code>ngx.var.Foo</code> to a <code>nil</code> value will unset the <code>$Foo</code> Nginx variable.</p>
+<p>```lua</p>
+<p>ngx.var.args = nil</p>
+<p>```</p>
+<p><strong>CAUTION</strong> When reading from an Nginx variable, Nginx will allocate memory in the per-request memory pool which is freed only at request termination. So when you need to read from an Nginx variable repeatedly in your Lua code, cache the Nginx variable value to your own Lua variable, for example,</p>
+<p>```lua</p>
+<p>local val = ngx.var.some_var  --- use the val repeatedly later ```</p>
+<p>to prevent (temporary) memory leaking within the current request's lifetime. Another way of caching the result is to use the <a href="#ngxctx">ngx.ctx</a> table.</p>
+<p>Undefined Nginx variables are evaluated to <code>nil</code> while uninitialized (but defined) Nginx variables are evaluated to an empty Lua string.</p>
+<p>This API requires a relatively expensive metamethod call and it is recommended to avoid using it on hot code paths.</p>

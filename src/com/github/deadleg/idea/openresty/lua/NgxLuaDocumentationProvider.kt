@@ -4,13 +4,10 @@ import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import java.io.IOException
-import java.net.URI
 import java.net.URISyntaxException
-import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
 

@@ -7,8 +7,6 @@ import com.intellij.lang.parameterInfo.ParameterInfoHandler
 import com.intellij.lang.parameterInfo.ParameterInfoUIContext
 import com.intellij.lang.parameterInfo.UpdateParameterInfoContext
 import com.intellij.psi.PsiElement
-import com.intellij.psi.impl.source.tree.java.PsiEmptyExpressionImpl
-import com.intellij.psi.util.PsiTreeUtil
 
 class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
     override fun couldShowInLookup(): Boolean {
@@ -35,7 +33,7 @@ class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
             return
         }
         // Remove braces
-        val functionElement = if ("com.sylvanaar.idea.Lua.lang.psi.impl.lists.LuaExpressionListImpl".equals(element.javaClass.name)) {
+        val functionElement = if ("com.sylvanaar.idea.Lua.lang.psi.impl.lists.LuaExpressionListImpl" == element.javaClass.name) {
             element.parent.parent
         } else {
             element
@@ -84,7 +82,7 @@ class NgxLuaParameterInfoHandler : ParameterInfoHandler<PsiElement, Any> {
         } else if (numberOfArgs > parameters.size) {
             return
         }
-        context.setHighlightedParameter(parameters[numberOfArgs - 1])
+        context.highlightedParameter = parameters[numberOfArgs - 1]
     }
 
     override fun getParameterCloseChars(): String? {

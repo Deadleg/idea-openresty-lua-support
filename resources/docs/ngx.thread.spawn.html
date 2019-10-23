@@ -1,19 +1,45 @@
-<p><strong>syntax:</strong> <em>co = ngx.thread.spawn(func, arg1, arg2, ...)</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;</em></p><p>Spawns a new user "light thread" with the Lua function <code>func</code> as well as those optional arguments <code>arg1</code>, <code>arg2</code>, and etc. Returns a Lua thread (or Lua coroutine) object represents this "light thread".</p><p>"Light threads" are just a special kind of Lua coroutines that are scheduled by the ngx_lua module.</p><p>Before <code>ngx.thread.spawn</code> returns, the <code>func</code> will be called with those optional arguments until it returns, aborts with an error, or gets yielded due to I/O operations via the <a href="#nginx-api-for-lua">Nginx API for Lua</a> (like <a href="#tcpsockreceive">tcpsock:receive</a>).</p><p>After <code>ngx.thread.spawn</code> returns, the newly-created "light thread" will keep running asynchronously usually at various I/O events.</p><p>All the Lua code chunks running by <a href="#rewrite_by_lua">rewrite_by_lua</a>, <a href="#access_by_lua">access_by_lua</a>, and <a href="#content_by_lua">content_by_lua</a> are in a boilerplate "light thread" created automatically by ngx_lua. Such boilerplate "light thread" are also called "entry threads".</p><p>By default, the corresponding Nginx handler (e.g., <a href="#rewrite_by_lua">rewrite_by_lua</a> handler) will not terminate until</p>
+<p><strong>syntax:</strong> <em>co = ngx.thread.spawn(func, arg1, arg2, ...)</em></p>
+<p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, ngx.timer.&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;</em></p>
+<p>Spawns a new user "light thread" with the Lua function <code>func</code> as well as those optional arguments <code>arg1</code>, <code>arg2</code>, and etc. Returns a Lua thread (or Lua coroutine) object represents this "light thread".</p>
+<p>"Light threads" are just a special kind of Lua coroutines that are scheduled by the ngx_lua module.</p>
+<p>Before <code>ngx.thread.spawn</code> returns, the <code>func</code> will be called with those optional arguments until it returns, aborts with an error, or gets yielded due to I/O operations via the <a href="#nginx-api-for-lua">Nginx API for Lua</a> (like <a href="#tcpsockreceive">tcpsock:receive</a>).</p>
+<p>After <code>ngx.thread.spawn</code> returns, the newly-created "light thread" will keep running asynchronously usually at various I/O events.</p>
+<p>All the Lua code chunks running by <a href="#rewrite_by_lua">rewrite_by_lua</a>, <a href="#access_by_lua">access_by_lua</a>, and <a href="#content_by_lua">content_by_lua</a> are in a boilerplate "light thread" created automatically by ngx_lua. Such boilerplate "light thread" are also called "entry threads".</p>
+<p>By default, the corresponding Nginx handler (e.g., <a href="#rewrite_by_lua">rewrite_by_lua</a> handler) will not terminate until</p>
 <ol>
   <li>both the "entry thread" and all the user "light threads" terminates,</li>
   <li>a "light thread" (either the "entry thread" or a user "light thread" aborts by calling <a href="#ngxexit">ngx.exit</a>, <a href="#ngxexec">ngx.exec</a>, <a href="#ngxredirect">ngx.redirect</a>, or <a href="#ngxreqset_uri">ngx.req.set_uri(uri, true)</a>, or</li>
   <li>the "entry thread" terminates with a Lua error.</li>
-</ol><p>When the user "light thread" terminates with a Lua error, however, it will not abort other running "light threads" like the "entry thread" does.</p><p>Due to the limitation in the Nginx subrequest model, it is not allowed to abort a running Nginx subrequest in general. So it is also prohibited to abort a running "light thread" that is pending on one ore more Nginx subrequests. You must call <a href="#ngxthreadwait">ngx.thread.wait</a> to wait for those "light thread" to terminate before quitting the "world". A notable exception here is that you can abort pending subrequests by calling <a href="#ngxexit">ngx.exit</a> with and only with the status code <code>ngx.ERROR</code> (-1), <code>408</code>, <code>444</code>, or <code>499</code>.</p><p>The "light threads" are not scheduled in a pre-emptive way. In other words, no time-slicing is performed automatically. A "light thread" will keep running exclusively on the CPU until</p>
+</ol>
+<p>When the user "light thread" terminates with a Lua error, however, it will not abort other running "light threads" like the "entry thread" does.</p>
+<p>Due to the limitation in the Nginx subrequest model, it is not allowed to abort a running Nginx subrequest in general. So it is also prohibited to abort a running "light thread" that is pending on one ore more Nginx subrequests. You must call <a href="#ngxthreadwait">ngx.thread.wait</a> to wait for those "light thread" to terminate before quitting the "world". A notable exception here is that you can abort pending subrequests by calling <a href="#ngxexit">ngx.exit</a> with and only with the status code <code>ngx.ERROR</code> (-1), <code>408</code>, <code>444</code>, or <code>499</code>.</p>
+<p>The "light threads" are not scheduled in a pre-emptive way. In other words, no time-slicing is performed automatically. A "light thread" will keep running exclusively on the CPU until</p>
 <ol>
   <li>a (nonblocking) I/O operation cannot be completed in a single run,</li>
   <li>it calls <a href="#coroutineyield">coroutine.yield</a> to actively give up execution, or</li>
   <li>it is aborted by a Lua error or an invocation of <a href="#ngxexit">ngx.exit</a>, <a href="#ngxexec">ngx.exec</a>, <a href="#ngxredirect">ngx.redirect</a>, or <a href="#ngxreqset_uri">ngx.req.set_uri(uri, true)</a>.</li>
-</ol><p>For the first two cases, the "light thread" will usually be resumed later by the ngx_lua scheduler unless a "stop-the-world" event happens.</p><p>User "light threads" can create "light threads" themselves. And normal user coroutines created by <a href="#coroutinecreate">coroutine.create</a> can also create "light threads". The coroutine (be it a normal Lua coroutine or a "light thread") that directly spawns the "light thread" is called the "parent coroutine" for the "light thread" newly spawned.</p><p>The "parent coroutine" can call <a href="#ngxthreadwait">ngx.thread.wait</a> to wait on the termination of its child "light thread".</p><p>You can call coroutine.status() and coroutine.yield() on the "light thread" coroutines.</p><p>The status of the "light thread" coroutine can be "zombie" if</p>
+</ol>
+<p>For the first two cases, the "light thread" will usually be resumed later by the ngx_lua scheduler unless a "stop-the-world" event happens.</p>
+<p>User "light threads" can create "light threads" themselves. And normal user coroutines created by <a href="#coroutinecreate">coroutine.create</a> can also create "light threads". The coroutine (be it a normal Lua coroutine or a "light thread") that directly spawns the "light thread" is called the "parent coroutine" for the "light thread" newly spawned.</p>
+<p>The "parent coroutine" can call <a href="#ngxthreadwait">ngx.thread.wait</a> to wait on the termination of its child "light thread".</p>
+<p>You can call coroutine.status() and coroutine.yield() on the "light thread" coroutines.</p>
+<p>The status of the "light thread" coroutine can be "zombie" if</p>
 <ol>
   <li>the current "light thread" already terminates (either successfully or with an error),</li>
   <li>its parent coroutine is still alive, and</li>
   <li>its parent coroutine is not waiting on it with <a href="#ngxthreadwait">ngx.thread.wait</a>.</li>
-</ol><p>The following example demonstrates the use of coroutine.yield() in the "light thread" coroutines to do manual time-slicing:</p><p>```lua</p><p>local yield = coroutine.yield</p><p>function f()  local self = coroutine.running()  ngx.say("f 1")  yield(self)  ngx.say("f 2")  yield(self)  ngx.say("f 3")  end</p><p>local self = coroutine.running()  ngx.say("0")  yield(self)</p><p>ngx.say("1")  ngx.thread.spawn(f)</p><p>ngx.say("2")  yield(self)</p><p>ngx.say("3")  yield(self)</p><p>ngx.say("4") ```</p><p>Then it will generate the output</p>
+</ol>
+<p>The following example demonstrates the use of coroutine.yield() in the "light thread" coroutines to do manual time-slicing:</p>
+<p>```lua</p>
+<p>local yield = coroutine.yield</p>
+<p>function f()  local self = coroutine.running()  ngx.say("f 1")  yield(self)  ngx.say("f 2")  yield(self)  ngx.say("f 3")  end</p>
+<p>local self = coroutine.running()  ngx.say("0")  yield(self)</p>
+<p>ngx.say("1")  ngx.thread.spawn(f)</p>
+<p>ngx.say("2")  yield(self)</p>
+<p>ngx.say("3")  yield(self)</p>
+<p>ngx.say("4")</p>
+<p>```</p>
+<p>Then it will generate the output</p>
 <pre><code>0
 1
 f 1
@@ -22,4 +48,13 @@ f 2
 3
 f 3
 4
-</code></pre><p>"Light threads" are mostly useful for making concurrent upstream requests in a single Nginx request handler, much like a generalized version of <a href="#ngxlocationcapture_multi">ngx.location.capture_multi</a> that can work with all the <a href="#nginx-api-for-lua">Nginx API for Lua</a>. The following example demonstrates parallel requests to MySQL, Memcached, and upstream HTTP services in a single Lua handler, and outputting the results in the order that they actually return (similar to Facebook's BigPipe model):</p><p>```lua</p><p>-- query mysql, memcached, and a remote http service at the same time,  -- output the results in the order that they  -- actually return the results.</p><p>local mysql = require "resty.mysql"  local memcached = require "resty.memcached"</p><p>local function query_mysql()  local db = mysql:new()  db:connect{  host = "127.0.0.1",  port = 3306,  database = "test",  user = "monty",  password = "mypass"  }  local res, err, errno, sqlstate =  db:query("select * from cats order by id asc")  db:set_keepalive(0, 100)  ngx.say("mysql done: ", cjson.encode(res))  end</p><p>local function query_memcached()  local memc = memcached:new()  memc:connect("127.0.0.1", 11211)  local res, err = memc:get("some_key")  ngx.say("memcached done: ", res)  end</p><p>local function query_http()  local res = ngx.location.capture("/my-http-proxy")  ngx.say("http done: ", res.body)  end</p><p>ngx.thread.spawn(query_mysql) -- create thread 1  ngx.thread.spawn(query_memcached) -- create thread 2  ngx.thread.spawn(query_http) -- create thread 3 ```</p><p>This API was first enabled in the <code>v0.7.0</code> release.</p>
+</code></pre>
+<p>"Light threads" are mostly useful for making concurrent upstream requests in a single Nginx request handler, much like a generalized version of <a href="#ngxlocationcapture_multi">ngx.location.capture_multi</a> that can work with all the <a href="#nginx-api-for-lua">Nginx API for Lua</a>. The following example demonstrates parallel requests to MySQL, Memcached, and upstream HTTP services in a single Lua handler, and outputting the results in the order that they actually return (similar to Facebook's BigPipe model):</p>
+<p>```lua</p>
+<p>-- query mysql, memcached, and a remote http service at the same time,  -- output the results in the order that they  -- actually return the results.</p>
+<p>local mysql = require "resty.mysql"  local memcached = require "resty.memcached"</p>
+<p>local function query_mysql()  local db = mysql:new()  db:connect{  host = "127.0.0.1",  port = 3306,  database = "test",  user = "monty",  password = "mypass"  }  local res, err, errno, sqlstate =  db:query("select * from cats order by id asc")  db:set_keepalive(0, 100)  ngx.say("mysql done: ", cjson.encode(res))  end</p>
+<p>local function query_memcached()  local memc = memcached:new()  memc:connect("127.0.0.1", 11211)  local res, err = memc:get("some_key")  ngx.say("memcached done: ", res)  end</p>
+<p>local function query_http()  local res = ngx.location.capture("/my-http-proxy")  ngx.say("http done: ", res.body)  end</p>
+<p>ngx.thread.spawn(query_mysql) -- create thread 1  ngx.thread.spawn(query_memcached) -- create thread 2  ngx.thread.spawn(query_http) -- create thread 3 ```</p>
+<p>This API was first enabled in the <code>v0.7.0</code> release.</p>

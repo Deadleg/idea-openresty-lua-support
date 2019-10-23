@@ -1,1 +1,16 @@
-<p><strong>syntax:</strong> <em>value, flags = ngx.shared.DICT:get(key)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p><p>Retrieving the value in the dictionary <a href="#ngxshareddict">ngx.shared.DICT</a> for the key <code>key</code>. If the key does not exist or has expired, then <code>nil</code> will be returned.</p><p>In case of errors, <code>nil</code> and a string describing the error will be returned.</p><p>The value returned will have the original data type when they were inserted into the dictionary, for example, Lua booleans, numbers, or strings.</p><p>The first argument to this method must be the dictionary object itself, for example,</p><p>```lua</p><p>local cats = ngx.shared.cats  local value, flags = cats.get(cats, "Marry") ```</p><p>or use Lua's syntactic sugar for method calls:</p><p>```lua</p><p>local cats = ngx.shared.cats  local value, flags = cats:get("Marry") ```</p><p>These two forms are fundamentally equivalent.</p><p>If the user flags is <code>0</code> (the default), then no flags value will be returned.</p><p>This feature was first introduced in the <code>v0.3.1rc22</code> release.</p><p>See also <a href="#ngxshareddict">ngx.shared.DICT</a>.</p>
+<p><strong>syntax:</strong> <em>value, flags = ngx.shared.DICT:get(key)</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p>Retrieving the value in the dictionary <a href="#ngxshareddict">ngx.shared.DICT</a> for the key <code>key</code>. If the key does not exist or has expired, then <code>nil</code> will be returned.</p>
+<p>In case of errors, <code>nil</code> and a string describing the error will be returned.</p>
+<p>The value returned will have the original data type when they were inserted into the dictionary, for example, Lua booleans, numbers, or strings.</p>
+<p>The first argument to this method must be the dictionary object itself, for example,</p>
+<p>```lua</p>
+<p>local cats = ngx.shared.cats  local value, flags = cats.get(cats, "Marry")</p>
+<p>```</p>
+<p>or use Lua's syntactic sugar for method calls:</p>
+<p>```lua</p>
+<p>local cats = ngx.shared.cats  local value, flags = cats:get("Marry") ```</p>
+<p>These two forms are fundamentally equivalent.</p>
+<p>If the user flags is <code>0</code> (the default), then no flags value will be returned.</p>
+<p>This feature was first introduced in the <code>v0.3.1rc22</code> release.</p>
+<p>See also <a href="#ngxshareddict">ngx.shared.DICT</a>.</p>

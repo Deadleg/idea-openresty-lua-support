@@ -1,0 +1,12 @@
+<p><strong>syntax:</strong> <em>capacity_bytes = ngx.shared.DICT:capacity()</em></p>
+<p><strong>context:</strong> <em>init_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p><strong>requires:</strong> <code>resty.core.shdict</code> or <code>resty.core</code></p>
+<p>Retrieves the capacity in bytes for the shm-based dictionary <a href="#ngxshareddict">ngx.shared.DICT</a> declared with the <a href="#lua_shared_dict">lua_shared_dict</a> directive.</p>
+<p>Example:</p>
+<p>```lua</p>
+<p>require "resty.core.shdict"</p>
+<p>local cats = ngx.shared.cats  local capacity_bytes = cats:capacity() ```</p>
+<p>This feature was first introduced in the <code>v0.10.11</code> release.</p>
+<p><strong>Note:</strong> This method requires the <code>resty.core.shdict</code> or <code>resty.core</code> modules from the <a href="https://github.com/openresty/lua-resty-core">lua-resty-core</a> library.</p>
+<p>This feature requires at least Nginx core version <code>0.7.3</code>.</p>
+<p>See also <a href="#ngxshareddict">ngx.shared.DICT</a>.</p>

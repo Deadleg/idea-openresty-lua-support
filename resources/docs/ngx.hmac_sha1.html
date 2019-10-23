@@ -1,3 +1,12 @@
-<p><strong>syntax:</strong> <em>digest = ngx.hmac_sha1(secret_key, str)</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p><p>Computes the <a href="http://en.wikipedia.org/wiki/HMAC">HMAC-SHA1</a> digest of the argument <code>str</code> and turns the result using the secret key <code>&lt;secret_key&gt;</code>.</p><p>The raw binary form of the <code>HMAC-SHA1</code> digest will be generated, use <a href="#ngxencode_base64">ngx.encode_base64</a>, for example, to encode the result to a textual representation if desired.</p><p>For example,</p><p>```lua</p><p>local key = "thisisverysecretstuff"  local src = "some string we want to sign"  local digest = ngx.hmac_sha1(key, src)  ngx.say(ngx.encode_base64(digest)) ```</p><p>yields the output</p>
+<p><strong>syntax:</strong> <em>digest = ngx.hmac_sha1(secret_key, str)</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p>Computes the <a href="https://en.wikipedia.org/wiki/HMAC">HMAC-SHA1</a> digest of the argument <code>str</code> and turns the result using the secret key <code>&lt;secret_key&gt;</code>.</p>
+<p>The raw binary form of the <code>HMAC-SHA1</code> digest will be generated, use <a href="#ngxencode_base64">ngx.encode_base64</a>, for example, to encode the result to a textual representation if desired.</p>
+<p>For example,</p>
+<p>```lua</p>
+<p>local key = "thisisverysecretstuff"  local src = "some string we want to sign"  local digest = ngx.hmac_sha1(key, src)  ngx.say(ngx.encode_base64(digest)) ```</p>
+<p>yields the output</p>
 <pre><code>R/pvxzHC4NLtj7S+kXFg/NePTmk=
-</code></pre><p>This API requires the OpenSSL library enabled in the Nginx build (usually by passing the <code>--with-http_ssl_module</code> option to the <code>./configure</code> script).</p><p>This function was first introduced in the <code>v0.3.1rc29</code> release.</p>
+</code></pre>
+<p>This API requires the OpenSSL library enabled in the Nginx build (usually by passing the <code>--with-http_ssl_module</code> option to the <code>./configure</code> script).</p>
+<p>This function was first introduced in the <code>v0.3.1rc29</code> release.</p>

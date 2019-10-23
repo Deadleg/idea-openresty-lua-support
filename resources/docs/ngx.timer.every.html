@@ -1,5 +1,10 @@
-<p><strong>syntax:</strong> <em>hdl, err = ngx.timer.every(delay, callback, user_arg1, user_arg2, ...)</em></p><p><strong>context:</strong> <em>init_worker_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p><p>Similar to the <a href="#ngxtimerat">ngx.timer.at</a> API function, but</p>
+<p><strong>syntax:</strong> <em>hdl, err = ngx.timer.every(delay, callback, user_arg1, user_arg2, ...)</em></p>
+<p><strong>context:</strong> <em>init_worker_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p>Similar to the <a href="#ngxtimerat">ngx.timer.at</a> API function, but</p>
 <ol>
   <li><code>delay</code> <em>cannot</em> be zero,</li>
   <li>timer will be created every <code>delay</code> seconds until the current Nginx worker process starts exiting.</li>
-</ol><p>When success, returns a "conditional true" value (but not a <code>true</code>). Otherwise, returns a "conditional false" value and a string describing the error.</p><p>This API also respect the <a href="#lua_max_pending_timers">lua_max_pending_timers</a> and <a href="#lua_max_running_timers">lua_max_running_timers</a>.</p><p>This API was first introduced in the <code>v0.10.9</code> release.</p>
+</ol>
+<p>When success, returns a "conditional true" value (but not a <code>true</code>). Otherwise, returns a "conditional false" value and a string describing the error.</p>
+<p>This API also respect the <a href="#lua_max_pending_timers">lua_max_pending_timers</a> and <a href="#lua_max_running_timers">lua_max_running_timers</a>.</p>
+<p>This API was first introduced in the <code>v0.10.9</code> release.</p>

@@ -1,1 +1,7 @@
-<p><strong>syntax:</strong> <em>count = ngx.worker.id()</em></p><p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, init_worker_by_lua&#42;</em></p><p>Returns the ordinal number of the current Nginx worker processes (starting from number 0).</p><p>So if the total number of workers is <code>N</code>, then this method may return a number between 0 and <code>N - 1</code> (inclusive).</p><p>This function returns meaningful values only for NGINX 1.9.1+. With earlier versions of NGINX, it always returns <code>nil</code>.</p><p>See also <a href="#ngxworkercount">ngx.worker.count</a>.</p><p>This API was first introduced in the <code>0.9.20</code> release.</p>
+<p><strong>syntax:</strong> <em>count = ngx.worker.id()</em></p>
+<p><strong>context:</strong> <em>set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, init_worker_by_lua&#42;</em></p>
+<p>Returns the ordinal number of the current Nginx worker processes (starting from number 0).</p>
+<p>So if the total number of workers is <code>N</code>, then this method may return a number between 0 and <code>N - 1</code> (inclusive).</p>
+<p>This function returns meaningful values only for Nginx 1.9.1+. With earlier versions of Nginx, it always returns <code>nil</code>.</p>
+<p>See also <a href="#ngxworkercount">ngx.worker.count</a>.</p>
+<p>This API was first introduced in the <code>0.9.20</code> release.</p>

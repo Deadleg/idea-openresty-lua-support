@@ -32,7 +32,7 @@ internal object NgxLuaKeywords {
                 for (i in fields.indices) {
                     if (i == 0) {
                         if (!keywordsTemp.containsKey("ngx")) {
-                            keywordsTemp.put("ngx", ArrayList())
+                            keywordsTemp["ngx"] = mutableListOf()
                         }
                         keywordsTemp["ngx"]!!.add(fields[i])
                     } else {
@@ -42,7 +42,7 @@ internal object NgxLuaKeywords {
                         }
                         key = key.substring(0, key.length - 1)
                         if (!keywordsTemp.containsKey(key)) {
-                            keywordsTemp.put(key, ArrayList())
+                            keywordsTemp[key] = ArrayList()
                         }
                         keywordsTemp[key]!!.add(fields[i])
                     }
@@ -55,7 +55,7 @@ internal object NgxLuaKeywords {
         } catch (e: IOException) {
             throw RuntimeException("Failed to load keywords", e)
         } catch (e: URISyntaxException) {
-            throw RuntimeException("Failed to load keywokds", e)
+            throw RuntimeException("Failed to load keywords", e)
         }
 
         keywords = keywordsTemp

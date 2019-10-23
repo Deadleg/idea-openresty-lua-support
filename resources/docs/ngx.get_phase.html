@@ -1,4 +1,6 @@
-<p><strong>syntax:</strong> <em>str = ngx.get_phase()</em></p><p><strong>context:</strong> <em>init_by_lua&#42;, init_worker_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p><p>Retrieves the current running phase name. Possible return values are</p>
+<p><strong>syntax:</strong> <em>str = ngx.get_phase()</em></p>
+<p><strong>context:</strong> <em>init_by_lua&#42;, init_worker_by_lua&#42;, set_by_lua&#42;, rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;, header_filter_by_lua&#42;, body_filter_by_lua&#42;, log_by_lua&#42;, ngx.timer.&#42;, balancer_by_lua&#42;, ssl_certificate_by_lua&#42;, ssl_session_fetch_by_lua&#42;, ssl_session_store_by_lua&#42;</em></p>
+<p>Retrieves the current running phase name. Possible return values are</p>
 <ul>
   <li><code>init</code> for the context of <a href="#init_by_lua">init_by_lua*</a>.</li>
   <li><code>init_worker</code> for the context of <a href="#init_worker_by_lua">init_worker_by_lua*</a>.</li>
@@ -14,4 +16,5 @@
   <li><code>body_filter</code> for the context of <a href="#body_filter_by_lua">body_filter_by_lua*</a>.</li>
   <li><code>log</code> for the context of <a href="#log_by_lua">log_by_lua*</a>.</li>
   <li><code>timer</code> for the context of user callback functions for <a href="#ngxtimerat">ngx.timer.*</a>.</li>
-</ul><p>This API was first introduced in the <code>v0.5.10</code> release.</p>
+</ul>
+<p>This API was first introduced in the <code>v0.5.10</code> release.</p>

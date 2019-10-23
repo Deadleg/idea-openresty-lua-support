@@ -4,37 +4,32 @@ import org.kordamp.gradle.markdown.MarkdownToHtmlTask
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
         maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.4.2'
-        classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'org.kordamp:markdown-gradle-plugin:1.2.0'
     }
 }
 
 plugins {
-    id "org.jetbrains.intellij" version "0.2.17"
+    id 'idea'
+    id "org.kordamp.markdown.convert" version "1.2.0"
+    id "org.jetbrains.intellij" version "0.4.10"
+    id "org.ajoberstar.grgit" version "3.1.1"
+    id "org.jetbrains.kotlin.jvm" version "1.3.50"
 }
-
-apply plugin: 'idea'
-apply plugin: 'kotlin'
-apply plugin: 'org.kordamp.markdown.convert'
 
 group 'com.github.deadleg'
 version '0.0.5-SNAPSHOT'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
-
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -49,10 +44,10 @@ sourceSets {
 }
 
 intellij {
-    version '2016.1' //IntelliJ IDEA dependency
+    version '2019.2' //IntelliJ IDEA dependency
     updateSinceUntilBuild false
     pluginName 'openrestyLuaSupport'
-    plugins = ['Lua:1.0.109']
+    plugins = ['Lua:1.0.119']
 
     publishPlugin {
         username  user
@@ -86,7 +81,7 @@ generateKeywords {
             if (maybeHeading.startsWith("== ngx.")) {
                 def field = maybeHeading.substring(3, maybeHeading.length() - 3)
                 def shortField = maybeHeading.substring(7, maybeHeading.length() - 3)
-                def syntax = lines.get(i + 1)
+                def syntax = lines.get(i + 2)
                 def split = syntax.split(field)
                 def args = ""
                 if (split.length > 1 && split[1].startsWith("(")) {
@@ -112,11 +107,13 @@ generateDocs {
         keywords.each { key ->
             def keyword = key.split(' ')[0] // if there are args then we need to remove them
             def start = lines.findIndexOf({ it.startsWith "ngx.${keyword}" })
+            println(lines.get(start))
+            println(start)
 
             // Generate quick docs
             // Just grabs the syntax/context lines
-            def maybeSyntax = lines.get(start + 2)
-            def maybeContext = lines.get(start + 4)
+            def maybeSyntax = lines.get(start + 3)
+            def maybeContext = lines.get(start + 5)
             def quickDoc = []
             if (maybeSyntax.startsWith('**syntax') || maybeSyntax.startsWith('**context')) {
                 quickDoc.add(maybeSyntax)
@@ -134,9 +131,14 @@ generateDocs {
                 i++
             }
 
-            file("resources/quickDocs/ngx.${keyword}.txt").write(
+            if (!new File("markdown/docs").exists()) {
+                new File("markdown").mkdirs()
+                new File("markdown/docs").mkdirs()
+            }
+
+            new File("resources/quickDocs/ngx.${keyword}.txt").write(
                     quickDoc.join('\n').replace('*', '').replace("&#42;", "*"))
-            file("markdown/docs/ngx.${keyword}.md").write(fullDoc.join('\n'))
+            new File("markdown/docs/ngx.${keyword}.md").write(fullDoc.join('\n'))
         }
     }
 }

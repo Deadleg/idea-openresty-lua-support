@@ -1,7 +1,51 @@
-<p><strong>syntax:</strong> <em>ngx.redirect(uri, status?)</em></p><p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;</em></p><p>Issue an <code>HTTP 301</code> or <code>302</code> redirection to <code>uri</code>.</p><p>The optional <code>status</code> parameter specifies the HTTP status code to be used. The following status codes are supported right now:</p>
+<p><strong>syntax:</strong> <em>ngx.redirect(uri, status?)</em></p>
+<p><strong>context:</strong> <em>rewrite_by_lua&#42;, access_by_lua&#42;, content_by_lua&#42;</em></p>
+<p>Issue an <code>HTTP 301</code> or <code>302</code> redirection to <code>uri</code>.</p>
+<p>Notice: the <code>uri</code> should not contains <code>\r</code> or <code>\n</code>, otherwise, the characters after <code>\r</code> or <code>\n</code> will be truncated, including the <code>\r</code> or <code>\n</code> bytes themself.</p>
+<p>The <code>uri</code> argument will be truncated if it contains the <code>\r</code> or <code>\n</code> characters. The truncated value will contain all characters up to (and excluding) the first occurrence of <code>\r</code> or <code>\n</code>.</p>
+<p>The optional <code>status</code> parameter specifies the HTTP status code to be used. The following status codes are supported right now:</p>
 <ul>
   <li><code>301</code></li>
   <li><code>302</code> (default)</li>
   <li><code>303</code></li>
   <li><code>307</code></li>
-</ul><p>It is <code>302</code> (<code>ngx.HTTP_MOVED_TEMPORARILY</code>) by default.</p><p>Here is an example assuming the current server name is <code>localhost</code> and that it is listening on port 1984:</p><p>```lua</p><p>return ngx.redirect("/foo") ```</p><p>which is equivalent to</p><p>```lua</p><p>return ngx.redirect("/foo", ngx.HTTP_MOVED_TEMPORARILY) ```</p><p>Redirecting arbitrary external URLs is also supported, for example:</p><p>```lua</p><p>return ngx.redirect("http://www.google.com") ```</p><p>We can also use the numerical code directly as the second <code>status</code> argument:</p><p>```lua</p><p>return ngx.redirect("/foo", 301) ```</p><p>This method is similar to the <a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite">rewrite</a> directive with the <code>redirect</code> modifier in the standard <a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html">ngx_http_rewrite_module</a>, for example, this <code>nginx.conf</code> snippet</p><p>```nginx</p><p>rewrite ^ /foo? redirect; # nginx config ```</p><p>is equivalent to the following Lua code</p><p>```lua</p><p>return ngx.redirect('/foo'); -- Lua code ```</p><p>while</p><p>```nginx</p><p>rewrite ^ /foo? permanent; # nginx config ```</p><p>is equivalent to</p><p>```lua</p><p>return ngx.redirect('/foo', ngx.HTTP_MOVED_PERMANENTLY) -- Lua code ```</p><p>URI arguments can be specified as well, for example:</p><p>```lua</p><p>return ngx.redirect('/foo?a=3&amp;b=4') ```</p><p>Note that this method call terminates the processing of the current request and that it <em>must</em> be called before <a href="#ngxsend_headers">ngx.send_headers</a> or explicit response body outputs by either <a href="#ngxprint">ngx.print</a> or <a href="#ngxsay">ngx.say</a>.</p><p>It is recommended that a coding style that combines this method call with the <code>return</code> statement, i.e., <code>return ngx.redirect(...)</code> be adopted when this method call is used in contexts other than <a href="#header_filter_by_lua">header_filter_by_lua*</a> to reinforce the fact that the request processing is being terminated.</p>
+  <li><code>308</code></li>
+</ul>
+<p>It is <code>302</code> (<code>ngx.HTTP_MOVED_TEMPORARILY</code>) by default.</p>
+<p>Here is an example assuming the current server name is <code>localhost</code> and that it is listening on port 1984:</p>
+<p>```lua</p>
+<p>return ngx.redirect("/foo")</p>
+<p>```</p>
+<p>which is equivalent to</p>
+<p>```lua</p>
+<p>return ngx.redirect("/foo", ngx.HTTP_MOVED_TEMPORARILY)</p>
+<p>```</p>
+<p>Redirecting arbitrary external URLs is also supported, for example:</p>
+<p>```lua</p>
+<p>return ngx.redirect("http://www.google.com")</p>
+<p>```</p>
+<p>We can also use the numerical code directly as the second <code>status</code> argument:</p>
+<p>```lua</p>
+<p>return ngx.redirect("/foo", 301)</p>
+<p>```</p>
+<p>This method is similar to the <a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite">rewrite</a> directive with the <code>redirect</code> modifier in the standard <a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html">ngx_http_rewrite_module</a>, for example, this <code>nginx.conf</code> snippet</p>
+<p>```nginx</p>
+<p>rewrite ^ /foo? redirect; # nginx config</p>
+<p>```</p>
+<p>is equivalent to the following Lua code</p>
+<p>```lua</p>
+<p>return ngx.redirect('/foo'); -- Lua code</p>
+<p>```</p>
+<p>while</p>
+<p>```nginx</p>
+<p>rewrite ^ /foo? permanent; # nginx config</p>
+<p>```</p>
+<p>is equivalent to</p>
+<p>```lua</p>
+<p>return ngx.redirect('/foo', ngx.HTTP_MOVED_PERMANENTLY) -- Lua code</p>
+<p>```</p>
+<p>URI arguments can be specified as well, for example:</p>
+<p>```lua</p>
+<p>return ngx.redirect('/foo?a=3&amp;b=4') ```</p>
+<p>Note that this method call terminates the processing of the current request and that it <em>must</em> be called before <a href="#ngxsend_headers">ngx.send_headers</a> or explicit response body outputs by either <a href="#ngxprint">ngx.print</a> or <a href="#ngxsay">ngx.say</a>.</p>
+<p>It is recommended that a coding style that combines this method call with the <code>return</code> statement, i.e., <code>return ngx.redirect(...)</code> be adopted when this method call is used in contexts other than <a href="#header_filter_by_lua">header_filter_by_lua*</a> to reinforce the fact that the request processing is being terminated.</p>
